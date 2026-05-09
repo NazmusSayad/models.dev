@@ -50,12 +50,14 @@ interface ModelsTableProps {
   data: FlatModel[]
   models: FlatModel[]
   columnVisibility: VisibilityState
+  onResetFilters: () => void
 }
 
 export function ModelsTable({
   data,
   models,
   columnVisibility,
+  onResetFilters,
 }: ModelsTableProps) {
   const viewportRef = useRef<HTMLDivElement>(null)
 
@@ -85,7 +87,6 @@ export function ModelsTable({
           ref={viewportRef}
           className="size-full rounded-[inherit]"
         >
-          {/* Sticky header */}
           <div
             className="bg-background sticky top-0 z-10 flex border-b shadow-xs"
             style={{ width: tableWidth, minWidth: tableWidth }}
@@ -111,41 +112,60 @@ export function ModelsTable({
             )}
           </div>
 
-          {/* Virtual body */}
-          <div
-            className="relative"
-            style={{
-              width: tableWidth,
-              minWidth: tableWidth,
-              height: `${virtualizer.getTotalSize()}px`,
-            }}
-          >
-            {virtualItems.map((virtualRow) => {
-              const row = rows[virtualRow.index]
-              if (!row) return null
-              const cells = row.getVisibleCells().map((cell) => ({
-                id: cell.id,
-                size: cell.column.getSize(),
-                content: flexRender(
-                  cell.column.columnDef.cell,
-                  cell.getContext()
-                ),
-              }))
-              return (
-                <VirtualRow
-                  key={row.id}
-                  cells={cells}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    transform: `translateY(${virtualRow.start}px)`,
-                    height: `${virtualRow.size}px`,
-                  }}
-                />
-              )
-            })}
-          </div>
+          {rows.length === 0 ? (
+            <div
+              className="flex flex-col items-center justify-center gap-3 py-16"
+              style={{ width: tableWidth, minWidth: tableWidth }}
+            >
+              <p className="text-muted-foreground text-sm">
+                No models match the current filters
+              </p>
+
+              {onResetFilters && (
+                <button
+                  onClick={onResetFilters}
+                  className="text-primary text-xs font-medium underline underline-offset-2 hover:opacity-80"
+                >
+                  Clear all filters
+                </button>
+              )}
+            </div>
+          ) : (
+            <div
+              className="relative"
+              style={{
+                width: tableWidth,
+                minWidth: tableWidth,
+                height: `${virtualizer.getTotalSize()}px`,
+              }}
+            >
+              {virtualItems.map((virtualRow) => {
+                const row = rows[virtualRow.index]
+                if (!row) return null
+                const cells = row.getVisibleCells().map((cell) => ({
+                  id: cell.id,
+                  size: cell.column.getSize(),
+                  content: flexRender(
+                    cell.column.columnDef.cell,
+                    cell.getContext()
+                  ),
+                }))
+                return (
+                  <VirtualRow
+                    key={row.id}
+                    cells={cells}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      transform: `translateY(${virtualRow.start}px)`,
+                      height: `${virtualRow.size}px`,
+                    }}
+                  />
+                )
+              })}
+            </div>
+          )}
         </ScrollAreaPrimitive.Viewport>
         <ScrollAreaPrimitive.ScrollAreaScrollbar
           orientation="vertical"
