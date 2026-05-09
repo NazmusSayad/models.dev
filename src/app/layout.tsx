@@ -14,7 +14,7 @@ const rubik = Rubik({
 })
 
 export const metadata: Metadata = {
-  title: 'OpenSource AI Models DB UI | Source: models.dev',
+  title: 'AI Models Explorer UI using models.dev',
   description:
     'Browse AI models from providers around the world from models.dev in a beautiful, fast UI',
   icons: {
