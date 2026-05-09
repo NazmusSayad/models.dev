@@ -128,9 +128,9 @@ export interface FlatModel {
   contextLimit: number
   inputLimit: number
   outputLimit: number
-  costOver200kInput: number
-  costOver200kOutput: number
-  costOver200kCacheRead: number
+  costOver200kInput?: number
+  costOver200kOutput?: number
+  costOver200kCacheRead?: number
   structuredOutput: boolean
   status: string
 }

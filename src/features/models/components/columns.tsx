@@ -1051,7 +1051,11 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: StatusHeader,
     size: 130,
     cell: ({ row }) => {
-      return row.original.status
+      return (
+        <span className="text-muted-foreground text-xs capitalize">
+          {row.original.status}
+        </span>
+      )
     },
   },
   {
@@ -1059,7 +1063,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: CostInputHeader,
     size: 140,
     cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
+      <span className="text-foreground text-sm tabular-nums">
         {formatCost(row.original.costInput)}
       </span>
     ),
@@ -1069,7 +1073,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: CostOutputHeader,
     size: 150,
     cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
+      <span className="text-foreground text-sm tabular-nums">
         {formatCost(row.original.costOutput)}
       </span>
     ),
@@ -1079,7 +1083,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: CostCacheReadHeader,
     size: 140,
     cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
+      <span className="text-foreground text-sm tabular-nums">
         {formatCost(row.original.costCacheRead)}
       </span>
     ),
@@ -1100,7 +1104,9 @@ export const columns: ColumnDef<FlatModel>[] = [
     size: 160,
     cell: ({ row }) => (
       <span className="text-muted-foreground text-sm tabular-nums">
-        {formatCost(row.original.costOver200kInput)}
+        {row.original.costOver200kInput
+          ? formatCost(row.original.costOver200kInput)
+          : '-'}
       </span>
     ),
   },
@@ -1110,7 +1116,9 @@ export const columns: ColumnDef<FlatModel>[] = [
     size: 160,
     cell: ({ row }) => (
       <span className="text-muted-foreground text-sm tabular-nums">
-        {formatCost(row.original.costOver200kOutput)}
+        {row.original.costOver200kOutput
+          ? formatCost(row.original.costOver200kOutput)
+          : '-'}
       </span>
     ),
   },
@@ -1120,7 +1128,9 @@ export const columns: ColumnDef<FlatModel>[] = [
     size: 160,
     cell: ({ row }) => (
       <span className="text-muted-foreground text-sm tabular-nums">
-        {formatCost(row.original.costOver200kCacheRead)}
+        {row.original.costOver200kCacheRead
+          ? formatCost(row.original.costOver200kCacheRead)
+          : '-'}
       </span>
     ),
   },
