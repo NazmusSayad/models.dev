@@ -36,13 +36,13 @@ export function normalizeModels(data: unknown): FlatModel[] {
         modalitiesInput: modalities.input || [],
         modalitiesOutput: modalities.output || [],
         open_weights: !!model.open_weights,
-        costInput: (cost.input as number) ?? 0,
-        costOutput: (cost.output as number) ?? 0,
-        costCacheRead: (cost.cache_read as number) ?? 0,
-        costCacheWrite: (cost.cache_write as number) ?? 0,
-        contextLimit: limit.context ?? 0,
-        inputLimit: limit.input ?? 0,
-        outputLimit: limit.output ?? 0,
+        costInput: cost.input as number,
+        costOutput: cost.output as number,
+        costCacheRead: cost.cache_read as number,
+        costCacheWrite: cost.cache_write as number,
+        contextLimit: limit.context,
+        inputLimit: limit.input,
+        outputLimit: limit.output,
         costOver200kInput: contextOver200k.input,
         costOver200kOutput: contextOver200k.output,
         costOver200kCacheRead: contextOver200k.cache_read,
@@ -123,13 +123,13 @@ export interface FlatModel {
   modalitiesInput: string[]
   modalitiesOutput: string[]
   open_weights: boolean
-  costInput: number
-  costOutput: number
-  costCacheRead: number
-  costCacheWrite: number
-  contextLimit: number
+  costInput?: number
+  costOutput?: number
+  costCacheRead?: number
+  costCacheWrite?: number
   inputLimit: number
   outputLimit: number
+  contextLimit: number
   costOver200kInput?: number
   costOver200kOutput?: number
   costOver200kCacheRead?: number
