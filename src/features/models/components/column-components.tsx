@@ -41,7 +41,7 @@ export function CostRenderer({ value }: { value?: number | null }) {
   }
 
   return (
-    <span className="text-foreground text-sm tabular-nums">
+    <span className="text-foreground text-sm font-thin tabular-nums">
       {value < 0.01
         ? `$${value.toFixed(4)}`
         : value < 1
