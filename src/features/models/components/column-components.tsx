@@ -698,7 +698,7 @@ export function ContextLimitHeader() {
 
   return (
     <FilterHeader
-      label="Context"
+      label="Context Limit"
       active={min !== null || max !== null}
       sorted={sorted}
       onSort={toggleSort}
@@ -722,7 +722,7 @@ export function InputLimitHeader() {
 
   return (
     <FilterHeader
-      label="Input Context"
+      label="Input Limit"
       active={min !== null || max !== null}
       sorted={sorted}
       onSort={toggleSort}
@@ -746,7 +746,7 @@ export function OutputLimitHeader() {
 
   return (
     <FilterHeader
-      label="Output Context"
+      label="Output Limit"
       active={min !== null || max !== null}
       sorted={sorted}
       onSort={toggleSort}

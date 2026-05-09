@@ -239,7 +239,7 @@ export const columns: ColumnDef<FlatModel>[] = [
   {
     accessorKey: 'contextLimit',
     header: ContextLimitHeader,
-    size: 130,
+    size: 160,
     cell: ({ row }) => (
       <NumberValueRenderer unit="number" value={row.original.contextLimit} />
     ),
@@ -255,7 +255,7 @@ export const columns: ColumnDef<FlatModel>[] = [
   {
     accessorKey: 'outputLimit',
     header: OutputLimitHeader,
-    size: 170,
+    size: 160,
     cell: ({ row }) => (
       <NumberValueRenderer unit="number" value={row.original.outputLimit} />
     ),
