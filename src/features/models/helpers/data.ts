@@ -127,9 +127,9 @@ export interface FlatModel {
   costOutput?: number
   costCacheRead?: number
   costCacheWrite?: number
-  inputLimit: number
-  outputLimit: number
-  contextLimit: number
+  inputLimit?: number
+  outputLimit?: number
+  contextLimit?: number
   costOver200kInput?: number
   costOver200kOutput?: number
   costOver200kCacheRead?: number
