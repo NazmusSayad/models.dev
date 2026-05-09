@@ -1,9 +1,9 @@
-import { OpenCodeIcon } from './icons/opencode'
+import { ModelsDotDevLogo } from './models.dev-logo'
 
 export function LoadingPage() {
   return (
     <div className="bg-background flex h-screen w-screen items-center justify-center overflow-hidden">
-      <OpenCodeIcon className="size-48" />
+      <ModelsDotDevLogo className="size-48 rotate-180" />
     </div>
   )
 }
