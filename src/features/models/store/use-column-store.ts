@@ -11,8 +11,8 @@ interface ColumnStore {
 const defaultVisibility: Record<string, boolean> = {
   providerName: true,
   name: true,
-  family: true,
-  status: true,
+  family: false,
+  status: false,
   costInput: true,
   costOutput: true,
   costCacheRead: true,
