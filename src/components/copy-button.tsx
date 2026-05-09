@@ -24,7 +24,7 @@ export function TextCopyButton({
   return (
     <button
       type="button"
-      title={tooltip}
+      title={tooltip ?? text}
       aria-label={tooltip ?? 'Copy to clipboard'}
       onClick={() => {
         void navigator.clipboard.writeText(text).then(() => setCopied(true))

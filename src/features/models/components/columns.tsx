@@ -56,8 +56,8 @@ export const columns: ColumnDef<FlatModel>[] = [
     size: 200,
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-2">
-          <span className="text-foreground text-sm">
+        <div className="grid grid-cols-[auto_auto] gap-2">
+          <span className="text-foreground truncate text-sm">
             {row.original.providerName}
           </span>
 
@@ -71,12 +71,13 @@ export const columns: ColumnDef<FlatModel>[] = [
   {
     accessorKey: 'name',
     header: ModelHeader,
-    size: 300,
+    size: 360,
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
+      <div className="grid grid-cols-[auto_auto] gap-2">
         <span
+          title={row.original.name}
           className={cn(
-            'text-foreground text-sm',
+            'text-foreground truncate text-sm',
             row.original.status === 'deprecated' &&
               'text-muted-foreground line-through'
           )}
