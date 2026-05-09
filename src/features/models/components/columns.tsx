@@ -1021,7 +1021,7 @@ export const columns: ColumnDef<FlatModel>[] = [
   {
     accessorKey: 'providerName',
     header: ProviderHeader,
-    size: 185,
+    size: 200,
     cell: ({ row }) => {
       return row.original.providerName
     },
