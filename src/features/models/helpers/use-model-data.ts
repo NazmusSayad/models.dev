@@ -353,33 +353,33 @@ export function useModelData(models: FlatModel[]) {
       )
     }
     if (contextLimitMin !== null) {
-      result = result.filter(
-        (m) => m.contextLimit != null && m.contextLimit >= contextLimitMin
+      result = result.filter((m) =>
+        m.contextLimit != null ? m.contextLimit >= contextLimitMin : false
       )
     }
     if (contextLimitMax !== null) {
-      result = result.filter(
-        (m) => m.contextLimit != null && m.contextLimit <= contextLimitMax
+      result = result.filter((m) =>
+        m.contextLimit != null ? m.contextLimit <= contextLimitMax : false
       )
     }
     if (inputLimitMin !== null) {
-      result = result.filter(
-        (m) => m.inputLimit != null && m.inputLimit >= inputLimitMin
+      result = result.filter((m) =>
+        m.inputLimit != null ? m.inputLimit >= inputLimitMin : false
       )
     }
     if (inputLimitMax !== null) {
-      result = result.filter(
-        (m) => m.inputLimit != null && m.inputLimit <= inputLimitMax
+      result = result.filter((m) =>
+        m.inputLimit != null ? m.inputLimit <= inputLimitMax : false
       )
     }
     if (outputLimitMin !== null) {
-      result = result.filter(
-        (m) => m.outputLimit != null && m.outputLimit >= outputLimitMin
+      result = result.filter((m) =>
+        m.outputLimit != null ? m.outputLimit >= outputLimitMin : false
       )
     }
     if (outputLimitMax !== null) {
-      result = result.filter(
-        (m) => m.outputLimit != null && m.outputLimit <= outputLimitMax
+      result = result.filter((m) =>
+        m.outputLimit != null ? m.outputLimit <= outputLimitMax : false
       )
     }
 
