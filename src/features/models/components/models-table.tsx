@@ -9,8 +9,9 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { ScrollArea as ScrollAreaPrimitive } from 'radix-ui'
 import { memo, useRef } from 'react'
+import { ModelsContext } from '../contexts/column-context'
 import { FlatModel } from '../helpers/data'
-import { columns, ModelsContext } from './columns'
+import { columns } from './columns'
 
 const ROW_HEIGHT = 44
 const OVERSCAN = 10
