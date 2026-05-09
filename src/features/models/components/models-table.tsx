@@ -157,11 +157,11 @@ export function ModelsTable({
                     key={row.id}
                     cells={cells}
                     style={{
-                      position: 'absolute',
                       top: 0,
                       left: 0,
-                      transform: `translateY(${virtualRow.start}px)`,
+                      position: 'absolute',
                       height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
                     }}
                   />
                 )
