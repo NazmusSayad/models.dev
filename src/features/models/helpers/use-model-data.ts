@@ -273,29 +273,45 @@ export function useModelData(models: FlatModel[]) {
       result = result.filter((m) => m.costCacheWrite <= costCacheWriteMax)
     }
     if (costOver200kInputMin !== null) {
-      result = result.filter((m) => m.costOver200kInput >= costOver200kInputMin)
+      result = result.filter((m) =>
+        m.costOver200kInput
+          ? m.costOver200kInput >= costOver200kInputMin
+          : false
+      )
     }
     if (costOver200kInputMax !== null) {
-      result = result.filter((m) => m.costOver200kInput <= costOver200kInputMax)
+      result = result.filter((m) =>
+        m.costOver200kInput
+          ? m.costOver200kInput <= costOver200kInputMax
+          : false
+      )
     }
     if (costOver200kOutputMin !== null) {
-      result = result.filter(
-        (m) => m.costOver200kOutput >= costOver200kOutputMin
+      result = result.filter((m) =>
+        m.costOver200kOutput
+          ? m.costOver200kOutput >= costOver200kOutputMin
+          : false
       )
     }
     if (costOver200kOutputMax !== null) {
-      result = result.filter(
-        (m) => m.costOver200kOutput <= costOver200kOutputMax
+      result = result.filter((m) =>
+        m.costOver200kOutput
+          ? m.costOver200kOutput <= costOver200kOutputMax
+          : false
       )
     }
     if (costOver200kCacheReadMin !== null) {
-      result = result.filter(
-        (m) => m.costOver200kCacheRead >= costOver200kCacheReadMin
+      result = result.filter((m) =>
+        m.costOver200kCacheRead
+          ? m.costOver200kCacheRead >= costOver200kCacheReadMin
+          : false
       )
     }
     if (costOver200kCacheReadMax !== null) {
-      result = result.filter(
-        (m) => m.costOver200kCacheRead <= costOver200kCacheReadMax
+      result = result.filter((m) =>
+        m.costOver200kCacheRead
+          ? m.costOver200kCacheRead <= costOver200kCacheReadMax
+          : false
       )
     }
     if (contextLimitMin !== null) {

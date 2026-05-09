@@ -43,9 +43,9 @@ export function normalizeModels(data: unknown): FlatModel[] {
         contextLimit: limit.context ?? 0,
         inputLimit: limit.input ?? 0,
         outputLimit: limit.output ?? 0,
-        costOver200kInput: contextOver200k.input ?? 0,
-        costOver200kOutput: contextOver200k.output ?? 0,
-        costOver200kCacheRead: contextOver200k.cache_read ?? 0,
+        costOver200kInput: contextOver200k.input,
+        costOver200kOutput: contextOver200k.output,
+        costOver200kCacheRead: contextOver200k.cache_read,
         structuredOutput: !!model.structured_output,
         status: (model.status as string) || 'active',
       })

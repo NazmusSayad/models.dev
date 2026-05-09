@@ -31,11 +31,8 @@ const VirtualRow = memo(
         {cells.map((cell) => (
           <div
             key={cell.id}
-            className="flex shrink-0 grow-0 items-center truncate px-3 py-2 text-sm"
-            style={{
-              width: cell.size,
-              minWidth: cell.size,
-            }}
+            className="flex shrink-0 items-center truncate px-3 py-2 text-sm"
+            style={{ width: cell.size }}
           >
             {cell.content}
           </div>
@@ -88,8 +85,8 @@ export function ModelsTable({
           className="size-full rounded-[inherit]"
         >
           <div
-            className="bg-background sticky top-0 z-10 flex border-b shadow-xs"
-            style={{ width: tableWidth, minWidth: tableWidth }}
+            className="bg-background sticky top-0 z-10 flex min-w-full border-b shadow-xs"
+            style={{ width: tableWidth }}
           >
             {table.getHeaderGroups().map((headerGroup) =>
               headerGroup.headers.map((header) => (
@@ -98,7 +95,6 @@ export function ModelsTable({
                   className="text-muted-foreground group flex shrink-0 grow-0 items-center truncate px-3 py-2.5 text-xs font-semibold tracking-wider whitespace-nowrap uppercase select-none"
                   style={{
                     width: header.getSize(),
-                    minWidth: header.getSize(),
                   }}
                 >
                   {header.isPlaceholder
@@ -115,7 +111,7 @@ export function ModelsTable({
           {rows.length === 0 ? (
             <div
               className="flex flex-col items-center justify-center gap-3 py-16"
-              style={{ width: tableWidth, minWidth: tableWidth }}
+              style={{ width: tableWidth }}
             >
               <p className="text-muted-foreground text-sm">
                 No models match the current filters
@@ -132,10 +128,9 @@ export function ModelsTable({
             </div>
           ) : (
             <div
-              className="relative"
+              className="relative min-w-full"
               style={{
                 width: tableWidth,
-                minWidth: tableWidth,
                 height: `${virtualizer.getTotalSize()}px`,
               }}
             >

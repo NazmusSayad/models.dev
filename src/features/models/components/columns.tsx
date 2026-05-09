@@ -1135,6 +1135,34 @@ export const columns: ColumnDef<FlatModel>[] = [
     ),
   },
   {
+    accessorKey: 'modalitiesInput',
+    header: ModalitiesInputHeader,
+    size: 150,
+    cell: ({ row }) => (
+      <div className="flex flex-wrap gap-1">
+        {row.original.modalitiesInput.map((m) => (
+          <span key={m} className="px-1.5 py-0 text-[10px]">
+            {m}
+          </span>
+        ))}
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'modalitiesOutput',
+    header: ModalitiesOutputHeader,
+    size: 150,
+    cell: ({ row }) => (
+      <div className="flex flex-wrap gap-1">
+        {row.original.modalitiesOutput.map((m) => (
+          <span key={m} className="px-1.5 py-0 text-[10px]">
+            {m}
+          </span>
+        ))}
+      </div>
+    ),
+  },
+  {
     accessorKey: 'contextLimit',
     header: ContextLimitHeader,
     size: 130,
@@ -1192,34 +1220,6 @@ export const columns: ColumnDef<FlatModel>[] = [
       <span className="text-muted-foreground text-sm">
         {formatDate(row.original.last_updated)}
       </span>
-    ),
-  },
-  {
-    accessorKey: 'modalitiesInput',
-    header: ModalitiesInputHeader,
-    size: 150,
-    cell: ({ row }) => (
-      <div className="flex flex-wrap gap-1">
-        {row.original.modalitiesInput.map((m) => (
-          <span key={m} className="px-1.5 py-0 text-[10px]">
-            {m}
-          </span>
-        ))}
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'modalitiesOutput',
-    header: ModalitiesOutputHeader,
-    size: 150,
-    cell: ({ row }) => (
-      <div className="flex flex-wrap gap-1">
-        {row.original.modalitiesOutput.map((m) => (
-          <span key={m} className="px-1.5 py-0 text-[10px]">
-            {m}
-          </span>
-        ))}
-      </div>
     ),
   },
   {
