@@ -142,6 +142,7 @@ export function ModelsTable({
               {virtualItems.map((virtualRow) => {
                 const row = rows[virtualRow.index]
                 if (!row) return null
+
                 const cells = row.getVisibleCells().map((cell) => ({
                   id: cell.id,
                   size: cell.column.getSize(),
@@ -150,6 +151,7 @@ export function ModelsTable({
                     cell.getContext()
                   ),
                 }))
+
                 return (
                   <VirtualRow
                     key={row.id}
@@ -167,12 +169,14 @@ export function ModelsTable({
             </div>
           )}
         </ScrollAreaPrimitive.Viewport>
+
         <ScrollAreaPrimitive.ScrollAreaScrollbar
           orientation="vertical"
           className="flex touch-none p-px transition-colors select-none data-vertical:h-full data-vertical:w-2.5 data-vertical:border-l data-vertical:border-l-transparent"
         >
           <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
         </ScrollAreaPrimitive.ScrollAreaScrollbar>
+
         <ScrollAreaPrimitive.ScrollAreaScrollbar
           orientation="horizontal"
           className="flex touch-none p-px transition-colors select-none data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:w-full"
