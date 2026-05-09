@@ -1,5 +1,5 @@
 import { ModelsPage } from '@/features/models'
-import { normalizeModels } from '@/features/models/data'
+import { normalizeModels } from '@/features/models/helpers/data'
 
 export default async function HomePage() {
   const res = await fetch('https://models.dev/api.json', {

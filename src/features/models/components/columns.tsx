@@ -9,8 +9,8 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ColumnDef, HeaderContext } from '@tanstack/react-table'
 import { Check, Filter, X } from 'lucide-react'
-import { FlatModel } from './types'
-import { FilterState } from './use-model-data'
+import { FlatModel } from '../helpers/data'
+import { FilterState } from '../helpers/use-model-data'
 
 function formatCost(n: number) {
   if (n === 0) return 'Free'

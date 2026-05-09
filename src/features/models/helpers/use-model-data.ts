@@ -6,7 +6,7 @@ import {
   useQueryState,
 } from 'nuqs'
 import { useCallback, useDeferredValue, useMemo } from 'react'
-import { FlatModel } from './types'
+import { FlatModel } from './data'
 
 export interface FilterState {
   providers: string[]

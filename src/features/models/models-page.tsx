@@ -1,14 +1,14 @@
 'use client'
 
 import { SearchX } from 'lucide-react'
-import { useColumnStore } from './column-store'
-import { ColumnToggle } from './column-toggle'
-import { ModelsTable } from './models-table'
-import { SearchBar } from './search-bar'
-import { FlatModel } from './types'
-import { useModelData } from './use-model-data'
+import { ColumnToggle } from './components/column-toggle'
+import { ModelsTable } from './components/models-table'
+import { SearchBar } from './components/search-bar'
+import { FlatModel } from './helpers/data'
+import { useModelData } from './helpers/use-model-data'
+import { useColumnStore } from './store/use-column-store'
 
-export function ModelsPage({ models }: { models: FlatModel[] }) {
+export function ModelsPageCore({ models }: { models: FlatModel[] }) {
   const {
     search,
     setSearch,

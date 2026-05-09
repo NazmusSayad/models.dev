@@ -11,8 +11,8 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { ScrollArea as ScrollAreaPrimitive } from 'radix-ui'
 import { memo, useRef, useState } from 'react'
+import { FlatModel } from '../helpers/data'
 import { useColumns, UseColumnsProps } from './columns'
-import { FlatModel } from './types'
 
 const ROW_HEIGHT = 44
 const OVERSCAN = 10

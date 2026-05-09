@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Columns3 } from 'lucide-react'
-import { useColumnStore } from './column-store'
+import { useColumnStore } from '../store/use-column-store'
 
 const columnLabels: Record<string, string> = {
   providerName: 'Provider',
