@@ -1,4 +1,10 @@
-import MiniSearch from 'minisearch'
+import Fuse from 'fuse.js'
+import {
+  parseAsArrayOf,
+  parseAsBoolean,
+  parseAsString,
+  useQueryState,
+} from 'nuqs'
 import {
   useCallback,
   useDeferredValue,
@@ -19,62 +25,99 @@ export interface FilterState {
 }
 
 export function useModelData(models: FlatModel[]) {
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useQueryState('q', parseAsString.withDefault(''))
   const deferredSearch = useDeferredValue(search)
 
-  const [filters, setFilters] = useState<FilterState>({
-    providers: [],
-    families: [],
-    openWeights: null,
-    reasoning: null,
-    toolCall: null,
-    attachment: null,
-    modalities: [],
-  })
+  const [providers, setProviders] = useQueryState(
+    'providers',
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [families, setFamilies] = useQueryState(
+    'families',
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [modalities, setModalities] = useQueryState(
+    'modalities',
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
 
-  const miniSearch = useMemo(() => {
-    const ms = new MiniSearch({
-      fields: ['name', 'id', 'family', 'providerName'],
-      storeFields: ['id'],
-      searchOptions: {
-        prefix: true,
-        fuzzy: 0.2,
-      },
+  const [openWeightsRaw, setOpenWeights] = useQueryState(
+    'openWeights',
+    parseAsBoolean
+  )
+  const [reasoningRaw, setReasoning] = useQueryState(
+    'reasoning',
+    parseAsBoolean
+  )
+  const [toolCallRaw, setToolCall] = useQueryState('toolCall', parseAsBoolean)
+  const [attachmentRaw, setAttachment] = useQueryState(
+    'attachment',
+    parseAsBoolean
+  )
+
+  const openWeights = openWeightsRaw ?? null
+  const reasoning = reasoningRaw ?? null
+  const toolCall = toolCallRaw ?? null
+  const attachment = attachmentRaw ?? null
+
+  const filters = useMemo<FilterState>(
+    () => ({
+      providers,
+      families,
+      openWeights,
+      reasoning,
+      toolCall,
+      attachment,
+      modalities,
+    }),
+    [
+      providers,
+      families,
+      openWeights,
+      reasoning,
+      toolCall,
+      attachment,
+      modalities,
+    ]
+  )
+
+  const fuse = useMemo(() => {
+    return new Fuse(models, {
+      keys: ['name', 'id', 'family', 'providerName'],
+      threshold: 0.3,
+      ignoreLocation: true,
     })
-    ms.addAll(models.map((m, idx) => ({ ...m, id: m.id + '::' + idx })))
-    return ms
   }, [models])
 
   const filteredModels = useMemo(() => {
     let result = models
 
     if (deferredSearch.trim()) {
-      const hits = miniSearch.search(deferredSearch.trim())
-      const hitIds = new Set(hits.map((h) => h.id as string))
-      result = result.filter((m, idx) => hitIds.has(m.id + '::' + idx))
+      const hits = fuse.search(deferredSearch.trim())
+      result = hits.map((h) => h.item)
     }
 
-    if (filters.providers.length > 0) {
-      result = result.filter((m) => filters.providers.includes(m.providerId))
+    if (providers.length > 0) {
+      result = result.filter((m) => providers.includes(m.providerId))
     }
-    if (filters.families.length > 0) {
-      result = result.filter((m) => filters.families.includes(m.family))
+    if (families.length > 0) {
+      result = result.filter((m) => families.includes(m.family))
     }
-    if (filters.openWeights !== null) {
-      result = result.filter((m) => m.open_weights === filters.openWeights)
+    if (openWeights !== null) {
+      result = result.filter((m) => m.open_weights === openWeights)
     }
-    if (filters.reasoning !== null) {
-      result = result.filter((m) => m.reasoning === filters.reasoning)
+    if (reasoning !== null) {
+      result = result.filter((m) => m.reasoning === reasoning)
     }
-    if (filters.toolCall !== null) {
-      result = result.filter((m) => m.tool_call === filters.toolCall)
+    if (toolCall !== null) {
+      result = result.filter((m) => m.tool_call === toolCall)
     }
-    if (filters.attachment !== null) {
-      result = result.filter((m) => m.attachment === filters.attachment)
+    if (attachment !== null) {
+      result = result.filter((m) => m.attachment === attachment)
     }
-    if (filters.modalities.length > 0) {
+    if (modalities.length > 0) {
       result = result.filter((m) =>
-        filters.modalities.some(
+        modalities.some(
           (mod) =>
             m.modalitiesInput.includes(mod) || m.modalitiesOutput.includes(mod)
         )
@@ -82,7 +125,18 @@ export function useModelData(models: FlatModel[]) {
     }
 
     return result
-  }, [models, deferredSearch, miniSearch, filters])
+  }, [
+    models,
+    deferredSearch,
+    fuse,
+    providers,
+    families,
+    modalities,
+    openWeights,
+    reasoning,
+    toolCall,
+    attachment,
+  ])
 
   const uniqueProviders = useMemo(() => {
     const map = new Map<string, string>()
@@ -105,52 +159,77 @@ export function useModelData(models: FlatModel[]) {
     return Array.from(set).sort((a, b) => a.localeCompare(b))
   }, [models])
 
-  const toggleFilter = useCallback(
-    <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
-      setFilters((prev) => ({ ...prev, [key]: value }))
-    },
-    []
-  )
-
   const toggleArrayFilter = useCallback(
     <K extends 'providers' | 'families' | 'modalities'>(
       key: K,
-      value: string
+      value: string,
+      setter: (v: string[] | null) => void
     ) => {
-      setFilters((prev) => {
-        const arr = prev[key]
-        const exists = arr.includes(value)
-        const next = exists ? arr.filter((v) => v !== value) : [...arr, value]
-        return { ...prev, [key]: next }
-      })
+      const arr = filters[key]
+      const exists = arr.includes(value)
+      const next = exists ? arr.filter((v) => v !== value) : [...arr, value]
+      setter(next.length > 0 ? next : null)
+    },
+    [filters]
+  )
+
+  const toggleBooleanFilter = useCallback(
+    (setter: (v: boolean | null) => void, current: boolean | null) => {
+      if (current === null) setter(true)
+      else if (current === true) setter(false)
+      else setter(null)
     },
     []
   )
 
   const resetFilters = useCallback(() => {
-    setFilters({
-      providers: [],
-      families: [],
-      openWeights: null,
-      reasoning: null,
-      toolCall: null,
-      attachment: null,
-      modalities: [],
-    })
-    setSearch('')
-  }, [])
+    void setSearch(null)
+    void setProviders(null)
+    void setFamilies(null)
+    void setModalities(null)
+    void setOpenWeights(null)
+    void setReasoning(null)
+    void setToolCall(null)
+    void setAttachment(null)
+  }, [
+    setSearch,
+    setProviders,
+    setFamilies,
+    setModalities,
+    setOpenWeights,
+    setReasoning,
+    setToolCall,
+    setAttachment,
+  ])
+
+  const activeCount =
+    filters.providers.length +
+    filters.families.length +
+    (filters.openWeights !== null ? 1 : 0) +
+    (filters.reasoning !== null ? 1 : 0) +
+    (filters.toolCall !== null ? 1 : 0) +
+    (filters.attachment !== null ? 1 : 0) +
+    filters.modalities.length
 
   return {
     search,
     setSearch,
     filters,
-    toggleFilter,
     toggleArrayFilter,
+    toggleBooleanFilter,
     resetFilters,
     filteredModels,
     uniqueProviders,
     uniqueFamilies,
     uniqueModalities,
+    activeCount,
+    setProviders,
+    setFamilies,
+    setModalities,
+    setOpenWeights,
+    setReasoning,
+    setToolCall,
+    setAttachment,
   }
 }
 
@@ -165,7 +244,6 @@ export function useFetchModels() {
       try {
         const { normalizeModels } = await import('./data')
 
-        // Strategy 1: Try live API
         try {
           const res = await fetch('https://models.dev/api.json', {
             cache: 'no-store',
@@ -179,10 +257,9 @@ export function useFetchModels() {
             }
           }
         } catch {
-          // ignore, try next
+          // ignore
         }
 
-        // Strategy 2: Use bundled static data
         try {
           const data = await import('@/data/api-data.json')
           const normalized = normalizeModels(
@@ -197,7 +274,6 @@ export function useFetchModels() {
           // ignore
         }
 
-        // Strategy 3: Fallback to cached copy in localStorage
         try {
           const cached = localStorage.getItem('models-data')
           if (cached) {

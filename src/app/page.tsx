@@ -1,12 +1,10 @@
-'use client'
-
-import dynamic from 'next/dynamic'
-
-const ModelsPage = dynamic(
-  () => import('@/features/models').then((mod) => mod.ModelsPage),
-  { ssr: false }
-)
+import { ModelsPage } from '@/features/models'
+import { Suspense } from 'react'
 
 export default function HomePage() {
-  return <ModelsPage />
+  return (
+    <Suspense fallback={null}>
+      <ModelsPage />
+    </Suspense>
+  )
 }

@@ -15,16 +15,19 @@
     "@tanstack/react-virtual": "^3.13.24",
     "class-variance-authority": "^0",
     "clsx": "^2",
+    "fuse.js": "^7.3.0",
     "lucide-react": "^1",
     "minisearch": "^7.2.0",
     "next": "^16",
     "next-themes": "^0",
+    "nuqs": "^2.8.9",
     "radix-ui": "^1.4.3",
     "react": "^19",
     "react-dom": "^19",
     "shadcn": "^4.7.0",
     "tailwind-merge": "^3",
-    "tw-animate-css": "^1.4.0"
+    "tw-animate-css": "^1.4.0",
+    "zustand": "^5.0.13"
   },
   "devDependencies": {
     "@eslint/compat": "^2",

@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { Geist } from 'next/font/google'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { PropsWithChildren } from 'react'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
@@ -22,7 +23,7 @@ export default function Layout({ children }: PropsWithChildren) {
     >
       <body className="antialiased">
         <ThemeProvider attribute="class" enableSystem>
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
         </ThemeProvider>
       </body>
     </html>
