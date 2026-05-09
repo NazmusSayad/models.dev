@@ -20,6 +20,7 @@ const defaultVisibility: Record<string, boolean> = {
   costOver200kInput: false,
   costOver200kOutput: false,
   costOver200kCacheRead: false,
+  costOver200kCacheWrite: false,
   contextLimit: true,
   inputLimit: true,
   outputLimit: true,

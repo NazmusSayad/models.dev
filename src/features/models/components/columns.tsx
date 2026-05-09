@@ -18,6 +18,7 @@ import {
   CostInputHeader,
   CostOutputHeader,
   CostOver200kCacheReadHeader,
+  CostOver200kCacheWriteHeader,
   CostOver200kInputHeader,
   CostOver200kOutputHeader,
   CostRenderer,
@@ -129,6 +130,14 @@ export const columns: ColumnDef<FlatModel>[] = [
     size: 160,
     cell: ({ row }) => (
       <CostRenderer value={row.original.costOver200kCacheRead} />
+    ),
+  },
+  {
+    accessorKey: 'costOver200kCacheWrite',
+    header: CostOver200kCacheWriteHeader,
+    size: 160,
+    cell: ({ row }) => (
+      <CostRenderer value={row.original.costOver200kCacheWrite} />
     ),
   },
   {

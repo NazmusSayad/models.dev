@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 import Fuse from 'fuse.js'
 import {
   parseAsArrayOf,
@@ -122,6 +124,10 @@ export function useModelData(models: FlatModel[]) {
     useQueryState('costOver200kCacheReadMin', parseAsFloat)
   const [costOver200kCacheReadMaxRaw, setCostOver200kCacheReadMax] =
     useQueryState('costOver200kCacheReadMax', parseAsFloat)
+  const [costOver200kCacheWriteMinRaw, setCostOver200kCacheWriteMin] =
+    useQueryState('costOver200kCacheWriteMin', parseAsFloat)
+  const [costOver200kCacheWriteMaxRaw, setCostOver200kCacheWriteMax] =
+    useQueryState('costOver200kCacheWriteMax', parseAsFloat)
   const [contextLimitMinRaw, setContextLimitMin] = useQueryState(
     'contextLimitMin',
     parseAsInteger
@@ -169,6 +175,8 @@ export function useModelData(models: FlatModel[]) {
   const costOver200kOutputMax = costOver200kOutputMaxRaw ?? null
   const costOver200kCacheReadMin = costOver200kCacheReadMinRaw ?? null
   const costOver200kCacheReadMax = costOver200kCacheReadMaxRaw ?? null
+  const costOver200kCacheWriteMin = costOver200kCacheWriteMinRaw ?? null
+  const costOver200kCacheWriteMax = costOver200kCacheWriteMaxRaw ?? null
   const contextLimitMin = contextLimitMinRaw ?? null
   const contextLimitMax = contextLimitMaxRaw ?? null
   const inputLimitMin = inputLimitMinRaw ?? null
@@ -314,6 +322,20 @@ export function useModelData(models: FlatModel[]) {
           : false
       )
     }
+    if (costOver200kCacheWriteMin !== null) {
+      result = result.filter((m) =>
+        m.costOver200kCacheWrite
+          ? m.costOver200kCacheWrite >= costOver200kCacheWriteMin
+          : false
+      )
+    }
+    if (costOver200kCacheWriteMax !== null) {
+      result = result.filter((m) =>
+        m.costOver200kCacheWrite
+          ? m.costOver200kCacheWrite <= costOver200kCacheWriteMax
+          : false
+      )
+    }
     if (contextLimitMin !== null) {
       result = result.filter((m) => m.contextLimit >= contextLimitMin)
     }
@@ -394,6 +416,8 @@ export function useModelData(models: FlatModel[]) {
     costOver200kOutputMax,
     costOver200kCacheReadMin,
     costOver200kCacheReadMax,
+    costOver200kCacheWriteMin,
+    costOver200kCacheWriteMax,
     contextLimitMin,
     contextLimitMax,
     inputLimitMin,
@@ -424,6 +448,9 @@ export function useModelData(models: FlatModel[]) {
     (costOver200kInputMin !== null || costOver200kInputMax !== null ? 1 : 0) +
     (costOver200kOutputMin !== null || costOver200kOutputMax !== null ? 1 : 0) +
     (costOver200kCacheReadMin !== null || costOver200kCacheReadMax !== null
+      ? 1
+      : 0) +
+    (costOver200kCacheWriteMin !== null || costOver200kCacheWriteMax !== null
       ? 1
       : 0) +
     (contextLimitMin !== null || contextLimitMax !== null ? 1 : 0) +
@@ -460,6 +487,8 @@ export function useModelData(models: FlatModel[]) {
     void setCostOver200kOutputMax(null)
     void setCostOver200kCacheReadMin(null)
     void setCostOver200kCacheReadMax(null)
+    void setCostOver200kCacheWriteMin(null)
+    void setCostOver200kCacheWriteMax(null)
     void setContextLimitMin(null)
     void setContextLimitMax(null)
     void setInputLimitMin(null)
@@ -496,6 +525,8 @@ export function useModelData(models: FlatModel[]) {
     setCostOver200kOutputMax,
     setCostOver200kCacheReadMin,
     setCostOver200kCacheReadMax,
+    setCostOver200kCacheWriteMin,
+    setCostOver200kCacheWriteMax,
     setContextLimitMin,
     setContextLimitMax,
     setInputLimitMin,

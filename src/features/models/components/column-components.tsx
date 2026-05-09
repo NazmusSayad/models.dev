@@ -681,7 +681,31 @@ export function CostOver200kCacheReadHeader() {
 
   return (
     <FilterHeader
-      label=">200k Cache"
+      label=">200k Cache Read"
+      active={min !== null || max !== null}
+      sorted={sorted}
+      onSort={toggleSort}
+    >
+      <RangeFilterPopover
+        min={min}
+        max={max}
+        onChange={(newMin, newMax) => {
+          void setMin(newMin)
+          void setMax(newMax)
+        }}
+      />
+    </FilterHeader>
+  )
+}
+
+export function CostOver200kCacheWriteHeader() {
+  const [min, setMin] = useQueryState('costOver200kCacheWriteMin', parseAsFloat)
+  const [max, setMax] = useQueryState('costOver200kCacheWriteMax', parseAsFloat)
+  const { sorted, toggleSort } = useColumnSort('costOver200kCacheWrite')
+
+  return (
+    <FilterHeader
+      label=">200k Cache Write"
       active={min !== null || max !== null}
       sorted={sorted}
       onSort={toggleSort}

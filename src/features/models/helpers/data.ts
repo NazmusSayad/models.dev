@@ -46,6 +46,7 @@ export function normalizeModels(data: unknown): FlatModel[] {
         costOver200kInput: contextOver200k.input,
         costOver200kOutput: contextOver200k.output,
         costOver200kCacheRead: contextOver200k.cache_read,
+        costOver200kCacheWrite: contextOver200k.cache_write,
         structuredOutput: !!model.structured_output,
         status: (model.status as string) || 'active',
       })
@@ -78,6 +79,7 @@ export interface ApiModel {
       input?: number
       output?: number
       cache_read?: number
+      cache_write?: number
     }
   }
   limit?: {

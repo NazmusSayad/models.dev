@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { ColumnToggle } from './components/column-toggle'
 import { ModelsTable } from './components/models-table'
 import { SearchBar } from './components/search-bar'
@@ -17,12 +18,20 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
     <div className="flex h-screen w-full flex-col gap-3 p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight">Models</h1>
+          <Link href="/">
+            <h1 className="font-semibold tracking-[-.5px] uppercase">
+              Models.
+              <span className="text-muted-foreground line-through">sayad</span>
+              .dev
+            </h1>
+          </Link>
+
           <span className="text-muted-foreground bg-muted rounded-full px-2.5 py-0.5 text-xs font-medium">
             {filteredModels.length.toLocaleString()} /{' '}
             {models.length.toLocaleString()}
           </span>
         </div>
+
         <div className="flex items-center gap-2">
           <SearchBar value={search} onChange={setSearch} />
           <ColumnToggle />

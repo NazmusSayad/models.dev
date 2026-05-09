@@ -1,4 +1,5 @@
 import '@/styles/index.css'
+import '@/styles/theme.css'
 
 import { cn } from '@/lib/utils'
 import { Metadata } from 'next'
