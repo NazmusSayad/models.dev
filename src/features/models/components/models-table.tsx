@@ -14,7 +14,7 @@ import { FlatModel } from '../helpers/data'
 import { columns } from './columns'
 
 const ROW_HEIGHT = 44
-const OVERSCAN = 10
+const OVER_SCAN = 16
 
 const VirtualRow = memo(
   ({
@@ -72,7 +72,7 @@ export function ModelsTable({
     count: rows.length,
     getScrollElement: () => viewportRef.current,
     estimateSize: () => ROW_HEIGHT,
-    overscan: OVERSCAN,
+    overscan: OVER_SCAN,
   })
 
   const virtualItems = virtualizer.getVirtualItems()
