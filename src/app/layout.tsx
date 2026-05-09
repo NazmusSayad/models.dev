@@ -1,6 +1,7 @@
 import '@/styles/index.css'
 import '@/styles/theme.css'
 
+import { clientEnv } from '@/env'
 import { cn } from '@/lib/utils'
 import { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
@@ -18,14 +19,14 @@ export const metadata: Metadata = {
   description:
     'Browse AI models from providers around the world from models.dev in a beautiful, fast UI',
   icons: {
-    icon: '/logo/logo-64.png',
+    icon: `${clientEnv.NEXT_PUBLIC_APP_URL}/logo/logo-32.png`,
   },
   openGraph: {
-    images: [{ url: '/og-image.png' }],
+    images: [{ url: `${clientEnv.NEXT_PUBLIC_APP_URL}/og-image.png` }],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/og-image.png'],
+    images: [`${clientEnv.NEXT_PUBLIC_APP_URL}/og-image.png`],
   },
 }
 
