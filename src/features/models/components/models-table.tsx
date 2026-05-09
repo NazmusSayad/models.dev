@@ -168,14 +168,14 @@ export function ModelsTable({
 
         <ScrollAreaPrimitive.ScrollAreaScrollbar
           orientation="vertical"
-          className="flex touch-none p-px transition-colors select-none data-vertical:h-full data-vertical:w-2.5 data-vertical:border-l data-vertical:border-l-transparent"
+          className="z-10 flex touch-none p-px transition-colors select-none data-vertical:h-full data-vertical:w-2.5 data-vertical:border-l data-vertical:border-l-transparent"
         >
           <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
         </ScrollAreaPrimitive.ScrollAreaScrollbar>
 
         <ScrollAreaPrimitive.ScrollAreaScrollbar
           orientation="horizontal"
-          className="flex touch-none p-px transition-colors select-none data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:w-full"
+          className="z-10 flex touch-none p-px transition-colors select-none data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:w-full"
         >
           <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
         </ScrollAreaPrimitive.ScrollAreaScrollbar>

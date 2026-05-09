@@ -1,3 +1,4 @@
+import { TextCopyButton } from '@/components/copy-button'
 import {
   AudioWave01Icon,
   Image01Icon,
@@ -53,7 +54,15 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: ProviderHeader,
     size: 200,
     cell: ({ row }) => {
-      return row.original.providerName
+      return (
+        <div className="flex items-center gap-2">
+          <span className="text-foreground text-sm font-medium">
+            {row.original.providerName}
+          </span>
+
+          <TextCopyButton text={row.original.providerId} />
+        </div>
+      )
     },
   },
   {
@@ -61,9 +70,13 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: ModelHeader,
     size: 300,
     cell: ({ row }) => (
-      <span className="text-foreground text-sm font-medium">
-        {row.original.name}
-      </span>
+      <div className="flex items-center gap-2">
+        <span className="text-foreground text-sm font-medium">
+          {row.original.name}
+        </span>
+
+        <TextCopyButton text={row.original.id} />
+      </div>
     ),
   },
   {
