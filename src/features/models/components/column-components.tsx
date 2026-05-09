@@ -136,7 +136,7 @@ function FilterHeader({
     <div className="flex items-center gap-1">
       <button
         onClick={onSort}
-        className="hover:text-foreground flex items-center truncate text-xs font-semibold tracking-wider whitespace-nowrap uppercase select-none"
+        className="hover:text-foreground flex items-center truncate text-xs font-medium tracking-wider whitespace-nowrap uppercase select-none"
       >
         {label}
         <SortArrow sorted={sorted} />
