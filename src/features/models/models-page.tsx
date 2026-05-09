@@ -1,14 +1,14 @@
 'use client'
 
-import { Loader2, SearchX } from 'lucide-react'
+import { SearchX } from 'lucide-react'
 import { useColumnStore } from './column-store'
 import { ColumnToggle } from './column-toggle'
 import { ModelsTable } from './models-table'
 import { SearchBar } from './search-bar'
-import { useFetchModels, useModelData } from './use-model-data'
+import { FlatModel } from './types'
+import { useModelData } from './use-model-data'
 
-export function ModelsPage() {
-  const { models, loading } = useFetchModels()
+export function ModelsPage({ models }: { models: FlatModel[] }) {
   const {
     search,
     setSearch,
@@ -29,15 +29,6 @@ export function ModelsPage() {
   } = useModelData(models)
 
   const columnVisibility = useColumnStore((s) => s.visibility)
-
-  if (loading) {
-    return (
-      <div className="flex h-screen w-full flex-col items-center justify-center gap-3">
-        <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
-        <p className="text-muted-foreground text-sm">Loading models...</p>
-      </div>
-    )
-  }
 
   return (
     <div className="flex h-screen w-full flex-col gap-3 p-4">

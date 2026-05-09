@@ -5,13 +5,7 @@ import {
   parseAsString,
   useQueryState,
 } from 'nuqs'
-import {
-  useCallback,
-  useDeferredValue,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useDeferredValue, useMemo } from 'react'
 import { FlatModel } from './types'
 
 export interface FilterState {
@@ -231,74 +225,4 @@ export function useModelData(models: FlatModel[]) {
     setToolCall,
     setAttachment,
   }
-}
-
-export function useFetchModels() {
-  const [models, setModels] = useState<FlatModel[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      try {
-        const { normalizeModels } = await import('./data')
-
-        try {
-          const res = await fetch('https://models.dev/api.json', {
-            cache: 'no-store',
-          })
-          if (res.ok) {
-            const normalized = normalizeModels(await res.json())
-            if (!cancelled) {
-              setModels(normalized)
-              setLoading(false)
-              return
-            }
-          }
-        } catch {
-          // ignore
-        }
-
-        try {
-          const data = await import('@/data/api-data.json')
-          const normalized = normalizeModels(
-            (data as { default?: unknown }).default ?? data
-          )
-          if (!cancelled) {
-            setModels(normalized)
-            setLoading(false)
-            return
-          }
-        } catch {
-          // ignore
-        }
-
-        try {
-          const cached = localStorage.getItem('models-data')
-          if (cached) {
-            const normalized = normalizeModels(JSON.parse(cached))
-            if (!cancelled) {
-              setModels(normalized)
-              setLoading(false)
-              return
-            }
-          }
-        } catch {
-          // ignore
-        }
-
-        if (!cancelled) setLoading(false)
-      } catch {
-        if (!cancelled) setLoading(false)
-      }
-    }
-
-    void load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  return { models, loading }
 }

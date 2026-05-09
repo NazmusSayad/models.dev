@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { Geist } from 'next/font/google'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, Suspense } from 'react'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -23,7 +23,9 @@ export default function Layout({ children }: PropsWithChildren) {
     >
       <body className="antialiased">
         <ThemeProvider attribute="class" enableSystem>
-          <NuqsAdapter>{children}</NuqsAdapter>
+          <NuqsAdapter>
+            <Suspense fallback={null}>{children}</Suspense>
+          </NuqsAdapter>
         </ThemeProvider>
       </body>
     </html>
