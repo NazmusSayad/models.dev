@@ -3,7 +3,9 @@
 import { Input } from '@/components/ui/input'
 import { Cancel01Icon, Search01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { useHotkey } from '@tanstack/react-hotkeys'
 import Link from 'next/link'
+import { useRef } from 'react'
 import { ColumnToggle } from './components/column-toggle'
 import { ModelsTable } from './components/models-table'
 import { FlatModel } from './helpers/data'
@@ -15,6 +17,12 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
     useModelData(models)
 
   const columnVisibility = useColumnStore((s) => s.visibility)
+
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useHotkey('Mod+K', () => {
+    inputRef.current?.focus()
+  })
 
   return (
     <div className="flex h-screen w-full flex-col gap-3 p-4">
@@ -42,6 +50,7 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
             />
 
             <Input
+              ref={inputRef}
               type="text"
               placeholder="Search models, providers, families..."
               value={search}

@@ -388,13 +388,19 @@ export function useModelData(models: FlatModel[]) {
         const aVal = a[sort as keyof FlatModel]
         const bVal = b[sort as keyof FlatModel]
 
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-          return dir === 'asc' ? aVal - bVal : bVal - aVal
+        if (typeof aVal === 'number' || typeof bVal === 'number') {
+          if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return dir === 'asc' ? aVal - bVal : bVal - aVal
+          }
+          return typeof aVal === 'number' ? -1 : 1
         }
-        if (typeof aVal === 'string' && typeof bVal === 'string') {
-          return dir === 'asc'
-            ? aVal.localeCompare(bVal)
-            : bVal.localeCompare(aVal)
+        if (typeof aVal === 'string' || typeof bVal === 'string') {
+          if (typeof aVal === 'string' && typeof bVal === 'string') {
+            return dir === 'asc'
+              ? aVal.localeCompare(bVal)
+              : bVal.localeCompare(aVal)
+          }
+          return typeof aVal === 'string' ? -1 : 1
         }
         if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
           if (aVal === bVal) return 0
