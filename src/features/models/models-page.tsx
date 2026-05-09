@@ -27,7 +27,7 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
   return (
     <div className="flex h-screen w-full flex-col gap-3 p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between gap-3 sm:justify-start">
           <Link href="/">
             <h1 className="font-semibold tracking-[-.5px] uppercase">
               Models.
@@ -36,14 +36,14 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
             </h1>
           </Link>
 
-          <span className="text-muted-foreground bg-muted rounded-full px-2.5 py-0.5 text-xs">
+          <span className="text-muted-foreground bg-muted rounded-full px-2.5 py-0.5 text-xs whitespace-nowrap">
             {filteredModels.length.toLocaleString()} /{' '}
             {models.length.toLocaleString()}
           </span>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="relative w-full max-w-sm">
+          <div className="relative w-full sm:max-w-sm">
             <HugeiconsIcon
               icon={Search01Icon}
               className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2"
@@ -52,7 +52,7 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
             <Input
               ref={inputRef}
               type="text"
-              placeholder="Search models, providers, families..."
+              placeholder="Search models, providers..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="bg-background h-8 rounded-md border pr-8 pl-9 text-sm shadow-sm transition-colors focus-visible:ring-1"
