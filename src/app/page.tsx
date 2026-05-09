@@ -3,8 +3,9 @@ import { normalizeModels } from '@/features/models/helpers/data'
 
 export default async function HomePage() {
   const res = await fetch('https://models.dev/api.json', {
-    cache: 'no-store',
+    next: { revalidate: 1800 },
   })
+
   const data = await res.json()
   const models = normalizeModels(data)
 
