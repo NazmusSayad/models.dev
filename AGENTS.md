@@ -1,1 +1,1 @@
-- Never ever `build` the entire project or start a `dev` server after doing any tasks.
+- Never run `npm run build` and `npm run dev`

@@ -3,24 +3,17 @@
 import {
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { ScrollArea as ScrollAreaPrimitive } from 'radix-ui'
-import { memo, useRef, useState } from 'react'
+import { memo, useRef } from 'react'
 import { FlatModel } from '../helpers/data'
-import { useColumns, UseColumnsProps } from './columns'
+import { columns, ModelsContext } from './columns'
 
 const ROW_HEIGHT = 44
 const OVERSCAN = 10
-
-interface ModelsTableProps extends UseColumnsProps {
-  data: FlatModel[]
-  columnVisibility: VisibilityState
-}
 
 const VirtualRow = memo(
   ({
@@ -53,22 +46,24 @@ const VirtualRow = memo(
 )
 VirtualRow.displayName = 'VirtualRow'
 
+interface ModelsTableProps {
+  data: FlatModel[]
+  models: FlatModel[]
+  columnVisibility: VisibilityState
+}
+
 export function ModelsTable({
   data,
+  models,
   columnVisibility,
-  ...columnProps
 }: ModelsTableProps) {
   const viewportRef = useRef<HTMLDivElement>(null)
-  const [sorting, setSorting] = useState<SortingState>([])
-  const columns = useColumns(columnProps)
 
   const table = useReactTable({
     data,
     columns,
-    state: { sorting, columnVisibility },
-    onSortingChange: setSorting,
+    state: { columnVisibility },
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   })
 
   const { rows } = table.getRowModel()
@@ -84,86 +79,88 @@ export function ModelsTable({
   const tableWidth = table.getTotalSize()
 
   return (
-    <ScrollAreaPrimitive.Root className="relative min-h-0 w-full flex-1 overflow-hidden rounded-md border">
-      <ScrollAreaPrimitive.Viewport
-        ref={viewportRef}
-        className="size-full rounded-[inherit]"
-      >
-        {/* Sticky header */}
-        <div
-          className="bg-background sticky top-0 z-10 flex border-b shadow-xs"
-          style={{ width: tableWidth, minWidth: tableWidth }}
+    <ModelsContext.Provider value={models}>
+      <ScrollAreaPrimitive.Root className="relative min-h-0 w-full flex-1 overflow-hidden rounded-md border">
+        <ScrollAreaPrimitive.Viewport
+          ref={viewportRef}
+          className="size-full rounded-[inherit]"
         >
-          {table.getHeaderGroups().map((headerGroup) =>
-            headerGroup.headers.map((header) => (
-              <div
-                key={header.id}
-                className="text-muted-foreground group flex shrink-0 grow-0 items-center truncate px-3 py-2.5 text-xs font-semibold tracking-wider whitespace-nowrap uppercase select-none"
-                style={{
-                  width: header.getSize(),
-                  minWidth: header.getSize(),
-                }}
-              >
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-              </div>
-            ))
-          )}
-        </div>
+          {/* Sticky header */}
+          <div
+            className="bg-background sticky top-0 z-10 flex border-b shadow-xs"
+            style={{ width: tableWidth, minWidth: tableWidth }}
+          >
+            {table.getHeaderGroups().map((headerGroup) =>
+              headerGroup.headers.map((header) => (
+                <div
+                  key={header.id}
+                  className="text-muted-foreground group flex shrink-0 grow-0 items-center truncate px-3 py-2.5 text-xs font-semibold tracking-wider whitespace-nowrap uppercase select-none"
+                  style={{
+                    width: header.getSize(),
+                    minWidth: header.getSize(),
+                  }}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </div>
+              ))
+            )}
+          </div>
 
-        {/* Virtual body */}
-        <div
-          className="relative"
-          style={{
-            width: tableWidth,
-            minWidth: tableWidth,
-            height: `${virtualizer.getTotalSize()}px`,
-          }}
+          {/* Virtual body */}
+          <div
+            className="relative"
+            style={{
+              width: tableWidth,
+              minWidth: tableWidth,
+              height: `${virtualizer.getTotalSize()}px`,
+            }}
+          >
+            {virtualItems.map((virtualRow) => {
+              const row = rows[virtualRow.index]
+              if (!row) return null
+              const cells = row.getVisibleCells().map((cell) => ({
+                id: cell.id,
+                size: cell.column.getSize(),
+                content: flexRender(
+                  cell.column.columnDef.cell,
+                  cell.getContext()
+                ),
+              }))
+              return (
+                <VirtualRow
+                  key={row.id}
+                  cells={cells}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    transform: `translateY(${virtualRow.start}px)`,
+                    height: `${virtualRow.size}px`,
+                  }}
+                />
+              )
+            })}
+          </div>
+        </ScrollAreaPrimitive.Viewport>
+        <ScrollAreaPrimitive.ScrollAreaScrollbar
+          orientation="vertical"
+          className="flex touch-none p-px transition-colors select-none data-vertical:h-full data-vertical:w-2.5 data-vertical:border-l data-vertical:border-l-transparent"
         >
-          {virtualItems.map((virtualRow) => {
-            const row = rows[virtualRow.index]
-            if (!row) return null
-            const cells = row.getVisibleCells().map((cell) => ({
-              id: cell.id,
-              size: cell.column.getSize(),
-              content: flexRender(
-                cell.column.columnDef.cell,
-                cell.getContext()
-              ),
-            }))
-            return (
-              <VirtualRow
-                key={row.id}
-                cells={cells}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  transform: `translateY(${virtualRow.start}px)`,
-                  height: `${virtualRow.size}px`,
-                }}
-              />
-            )
-          })}
-        </div>
-      </ScrollAreaPrimitive.Viewport>
-      <ScrollAreaPrimitive.ScrollAreaScrollbar
-        orientation="vertical"
-        className="flex touch-none p-px transition-colors select-none data-vertical:h-full data-vertical:w-2.5 data-vertical:border-l data-vertical:border-l-transparent"
-      >
-        <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
-      </ScrollAreaPrimitive.ScrollAreaScrollbar>
-      <ScrollAreaPrimitive.ScrollAreaScrollbar
-        orientation="horizontal"
-        className="flex touch-none p-px transition-colors select-none data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:w-full"
-      >
-        <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
-      </ScrollAreaPrimitive.ScrollAreaScrollbar>
-      <ScrollAreaPrimitive.Corner />
-    </ScrollAreaPrimitive.Root>
+          <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
+        </ScrollAreaPrimitive.ScrollAreaScrollbar>
+        <ScrollAreaPrimitive.ScrollAreaScrollbar
+          orientation="horizontal"
+          className="flex touch-none p-px transition-colors select-none data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:w-full"
+        >
+          <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
+        </ScrollAreaPrimitive.ScrollAreaScrollbar>
+        <ScrollAreaPrimitive.Corner />
+      </ScrollAreaPrimitive.Root>
+    </ModelsContext.Provider>
   )
 }

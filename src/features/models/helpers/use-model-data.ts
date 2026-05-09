@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-
 import Fuse from 'fuse.js'
 import {
   parseAsArrayOf,
@@ -11,43 +9,6 @@ import {
 } from 'nuqs'
 import { useCallback, useDeferredValue, useMemo } from 'react'
 import { FlatModel } from './data'
-
-export interface FilterState {
-  providers: string[]
-  families: string[]
-  openWeights: boolean | null
-  reasoning: boolean | null
-  toolCall: boolean | null
-  attachment: boolean | null
-  modalities: string[]
-  status: string[]
-  costInputMin: number | null
-  costInputMax: number | null
-  costOutputMin: number | null
-  costOutputMax: number | null
-  costCacheReadMin: number | null
-  costCacheReadMax: number | null
-  costCacheWriteMin: number | null
-  costCacheWriteMax: number | null
-  costOver200kInputMin: number | null
-  costOver200kInputMax: number | null
-  costOver200kOutputMin: number | null
-  costOver200kOutputMax: number | null
-  costOver200kCacheReadMin: number | null
-  costOver200kCacheReadMax: number | null
-  contextLimitMin: number | null
-  contextLimitMax: number | null
-  inputLimitMin: number | null
-  inputLimitMax: number | null
-  outputLimitMin: number | null
-  outputLimitMax: number | null
-  knowledgeQuery: string | null
-  releaseDateFrom: string | null
-  releaseDateTo: string | null
-  lastUpdatedFrom: string | null
-  lastUpdatedTo: string | null
-  structuredOutput: boolean | null
-}
 
 export function useModelData(models: FlatModel[]) {
   const [search, setSearch] = useQueryState('q', parseAsString.withDefault(''))
@@ -186,6 +147,9 @@ export function useModelData(models: FlatModel[]) {
     parseAsInteger
   )
 
+  const [sort] = useQueryState('sort', parseAsString)
+  const [dir] = useQueryState('dir', parseAsString)
+
   const openWeights = openWeightsRaw ?? null
   const reasoning = reasoningRaw ?? null
   const toolCall = toolCallRaw ?? null
@@ -211,81 +175,6 @@ export function useModelData(models: FlatModel[]) {
   const inputLimitMax = inputLimitMaxRaw ?? null
   const outputLimitMin = outputLimitMinRaw ?? null
   const outputLimitMax = outputLimitMaxRaw ?? null
-
-  const filters = useMemo<FilterState>(
-    () => ({
-      providers,
-      families,
-      openWeights,
-      reasoning,
-      toolCall,
-      attachment,
-      modalities,
-      status,
-      costInputMin,
-      costInputMax,
-      costOutputMin,
-      costOutputMax,
-      costCacheReadMin,
-      costCacheReadMax,
-      costCacheWriteMin,
-      costCacheWriteMax,
-      costOver200kInputMin,
-      costOver200kInputMax,
-      costOver200kOutputMin,
-      costOver200kOutputMax,
-      costOver200kCacheReadMin,
-      costOver200kCacheReadMax,
-      contextLimitMin,
-      contextLimitMax,
-      inputLimitMin,
-      inputLimitMax,
-      outputLimitMin,
-      outputLimitMax,
-      knowledgeQuery,
-      releaseDateFrom,
-      releaseDateTo,
-      lastUpdatedFrom,
-      lastUpdatedTo,
-      structuredOutput,
-    }),
-    [
-      providers,
-      families,
-      openWeights,
-      reasoning,
-      toolCall,
-      attachment,
-      modalities,
-      status,
-      costInputMin,
-      costInputMax,
-      costOutputMin,
-      costOutputMax,
-      costCacheReadMin,
-      costCacheReadMax,
-      costCacheWriteMin,
-      costCacheWriteMax,
-      costOver200kInputMin,
-      costOver200kInputMax,
-      costOver200kOutputMin,
-      costOver200kOutputMax,
-      costOver200kCacheReadMin,
-      costOver200kCacheReadMax,
-      contextLimitMin,
-      contextLimitMax,
-      inputLimitMin,
-      inputLimitMax,
-      outputLimitMin,
-      outputLimitMax,
-      knowledgeQuery,
-      releaseDateFrom,
-      releaseDateTo,
-      lastUpdatedFrom,
-      lastUpdatedTo,
-      structuredOutput,
-    ]
-  )
 
   const fuse = useMemo(() => {
     return new Fuse(models, {
@@ -428,6 +317,34 @@ export function useModelData(models: FlatModel[]) {
       result = result.filter((m) => m.outputLimit <= outputLimitMax)
     }
 
+    if (sort && (dir === 'asc' || dir === 'desc')) {
+      result = [...result].sort((a, b) => {
+        const aVal = a[sort as keyof FlatModel]
+        const bVal = b[sort as keyof FlatModel]
+
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          return dir === 'asc' ? aVal - bVal : bVal - aVal
+        }
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+          return dir === 'asc'
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal)
+        }
+        if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
+          if (aVal === bVal) return 0
+          return dir === 'asc' ? (aVal ? 1 : -1) : aVal ? -1 : 1
+        }
+        if (Array.isArray(aVal) && Array.isArray(bVal)) {
+          const aStr = aVal.join(',')
+          const bStr = bVal.join(',')
+          return dir === 'asc'
+            ? aStr.localeCompare(bStr)
+            : bStr.localeCompare(aStr)
+        }
+        return 0
+      })
+    }
+
     return result
   }, [
     models,
@@ -467,57 +384,35 @@ export function useModelData(models: FlatModel[]) {
     inputLimitMax,
     outputLimitMin,
     outputLimitMax,
+    sort,
+    dir,
   ])
 
-  const uniqueProviders = useMemo(() => {
-    const map = new Map<string, string>()
-    for (const m of models) map.set(m.providerId, m.providerName)
-    return Array.from(map.entries()).sort((a, b) => a[1].localeCompare(b[1]))
-  }, [models])
-
-  const uniqueFamilies = useMemo(() => {
-    const set = new Set<string>()
-    for (const m of models) if (m.family) set.add(m.family)
-    return Array.from(set).sort((a, b) => a.localeCompare(b))
-  }, [models])
-
-  const uniqueModalities = useMemo(() => {
-    const set = new Set<string>()
-    for (const m of models) {
-      for (const mod of m.modalitiesInput) set.add(mod)
-      for (const mod of m.modalitiesOutput) set.add(mod)
-    }
-    return Array.from(set).sort((a, b) => a.localeCompare(b))
-  }, [models])
-
-  const uniqueStatuses = useMemo(() => {
-    const set = new Set<string>()
-    for (const m of models) set.add(m.status)
-    return Array.from(set).sort((a, b) => a.localeCompare(b))
-  }, [models])
-
-  const toggleArrayFilter = useCallback(
-    <K extends 'providers' | 'families' | 'modalities' | 'status'>(
-      key: K,
-      value: string,
-      setter: (v: string[] | null) => void
-    ) => {
-      const arr = filters[key]
-      const exists = arr.includes(value)
-      const next = exists ? arr.filter((v) => v !== value) : [...arr, value]
-      setter(next.length > 0 ? next : null)
-    },
-    [filters]
-  )
-
-  const toggleBooleanFilter = useCallback(
-    (setter: (v: boolean | null) => void, current: boolean | null) => {
-      if (current === null) setter(true)
-      else if (current === true) setter(false)
-      else setter(null)
-    },
-    []
-  )
+  const activeCount =
+    providers.length +
+    families.length +
+    status.length +
+    (openWeights !== null ? 1 : 0) +
+    (reasoning !== null ? 1 : 0) +
+    (toolCall !== null ? 1 : 0) +
+    (attachment !== null ? 1 : 0) +
+    (structuredOutput !== null ? 1 : 0) +
+    modalities.length +
+    (knowledgeQuery !== null ? 1 : 0) +
+    (releaseDateFrom !== null || releaseDateTo !== null ? 1 : 0) +
+    (lastUpdatedFrom !== null || lastUpdatedTo !== null ? 1 : 0) +
+    (costInputMin !== null || costInputMax !== null ? 1 : 0) +
+    (costOutputMin !== null || costOutputMax !== null ? 1 : 0) +
+    (costCacheReadMin !== null || costCacheReadMax !== null ? 1 : 0) +
+    (costCacheWriteMin !== null || costCacheWriteMax !== null ? 1 : 0) +
+    (costOver200kInputMin !== null || costOver200kInputMax !== null ? 1 : 0) +
+    (costOver200kOutputMin !== null || costOver200kOutputMax !== null ? 1 : 0) +
+    (costOver200kCacheReadMin !== null || costOver200kCacheReadMax !== null
+      ? 1
+      : 0) +
+    (contextLimitMin !== null || contextLimitMax !== null ? 1 : 0) +
+    (inputLimitMin !== null || inputLimitMax !== null ? 1 : 0) +
+    (outputLimitMin !== null || outputLimitMax !== null ? 1 : 0)
 
   const resetFilters = useCallback(() => {
     void setSearch(null)
@@ -593,95 +488,11 @@ export function useModelData(models: FlatModel[]) {
     setOutputLimitMax,
   ])
 
-  const activeCount =
-    filters.providers.length +
-    filters.families.length +
-    filters.status.length +
-    (filters.openWeights !== null ? 1 : 0) +
-    (filters.reasoning !== null ? 1 : 0) +
-    (filters.toolCall !== null ? 1 : 0) +
-    (filters.attachment !== null ? 1 : 0) +
-    (filters.structuredOutput !== null ? 1 : 0) +
-    filters.modalities.length +
-    (filters.knowledgeQuery !== null ? 1 : 0) +
-    (filters.releaseDateFrom !== null || filters.releaseDateTo !== null
-      ? 1
-      : 0) +
-    (filters.lastUpdatedFrom !== null || filters.lastUpdatedTo !== null
-      ? 1
-      : 0) +
-    (filters.costInputMin !== null || filters.costInputMax !== null ? 1 : 0) +
-    (filters.costOutputMin !== null || filters.costOutputMax !== null ? 1 : 0) +
-    (filters.costCacheReadMin !== null || filters.costCacheReadMax !== null
-      ? 1
-      : 0) +
-    (filters.costCacheWriteMin !== null || filters.costCacheWriteMax !== null
-      ? 1
-      : 0) +
-    (filters.costOver200kInputMin !== null ||
-    filters.costOver200kInputMax !== null
-      ? 1
-      : 0) +
-    (filters.costOver200kOutputMin !== null ||
-    filters.costOver200kOutputMax !== null
-      ? 1
-      : 0) +
-    (filters.costOver200kCacheReadMin !== null ||
-    filters.costOver200kCacheReadMax !== null
-      ? 1
-      : 0) +
-    (filters.contextLimitMin !== null || filters.contextLimitMax !== null
-      ? 1
-      : 0) +
-    (filters.inputLimitMin !== null || filters.inputLimitMax !== null ? 1 : 0) +
-    (filters.outputLimitMin !== null || filters.outputLimitMax !== null ? 1 : 0)
-
   return {
     search,
     setSearch,
-    filters,
-    toggleArrayFilter,
-    toggleBooleanFilter,
-    resetFilters,
     filteredModels,
-    uniqueProviders,
-    uniqueFamilies,
-    uniqueModalities,
-    uniqueStatuses,
     activeCount,
-    setProviders,
-    setFamilies,
-    setModalities,
-    setStatus,
-    setOpenWeights,
-    setReasoning,
-    setToolCall,
-    setAttachment,
-    setStructuredOutput,
-    setKnowledgeQuery,
-    setReleaseDateFrom,
-    setReleaseDateTo,
-    setLastUpdatedFrom,
-    setLastUpdatedTo,
-    setCostInputMin,
-    setCostInputMax,
-    setCostOutputMin,
-    setCostOutputMax,
-    setCostCacheReadMin,
-    setCostCacheReadMax,
-    setCostCacheWriteMin,
-    setCostCacheWriteMax,
-    setCostOver200kInputMin,
-    setCostOver200kInputMax,
-    setCostOver200kOutputMin,
-    setCostOver200kOutputMax,
-    setCostOver200kCacheReadMin,
-    setCostOver200kCacheReadMax,
-    setContextLimitMin,
-    setContextLimitMax,
-    setInputLimitMin,
-    setInputLimitMax,
-    setOutputLimitMin,
-    setOutputLimitMax,
+    resetFilters,
   }
 }
