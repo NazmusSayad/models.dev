@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
@@ -65,27 +64,6 @@ function formatDate(dateStr: string | undefined) {
   }
 }
 
-function providerHue(name: string) {
-  let hash = 0
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  return Math.abs(hash) % 360
-}
-
-function statusHue(status: string) {
-  switch (status.toLowerCase()) {
-    case 'active':
-      return 142
-    case 'deprecated':
-      return 0
-    case 'beta':
-      return 38
-    default:
-      return 215
-  }
-}
-
 function BooleanCell({ value }: { value: boolean }) {
   return value ? (
     <HugeiconsIcon
@@ -97,10 +75,6 @@ function BooleanCell({ value }: { value: boolean }) {
   )
 }
 
-/* ------------------------------------------------------------------ */
-/*  Sort arrow                                                         */
-/* ------------------------------------------------------------------ */
-
 function SortArrow({ sorted }: { sorted: false | 'asc' | 'desc' }) {
   if (!sorted) return null
   return (
@@ -109,10 +83,6 @@ function SortArrow({ sorted }: { sorted: false | 'asc' | 'desc' }) {
     </span>
   )
 }
-
-/* ------------------------------------------------------------------ */
-/*  Filter dropdown (portal, local state)                              */
-/* ------------------------------------------------------------------ */
 
 function FilterDropdownComponent({
   active,
@@ -219,10 +189,6 @@ function FilterHeader({
     </div>
   )
 }
-
-/* ------------------------------------------------------------------ */
-/*  Filter popover contents                                            */
-/* ------------------------------------------------------------------ */
 
 function CheckboxFilterList({
   values,
@@ -432,10 +398,6 @@ function DateRangeFilterPopover({
   )
 }
 
-/* ------------------------------------------------------------------ */
-/*  useColumnSort                                                      */
-/* ------------------------------------------------------------------ */
-
 function useColumnSort(columnKey: string) {
   const [sort, setSort] = useQueryState('sort', parseAsString)
   const [dir, setDir] = useQueryState('dir', parseAsString)
@@ -457,10 +419,6 @@ function useColumnSort(columnKey: string) {
 
   return { sorted, toggleSort }
 }
-
-/* ------------------------------------------------------------------ */
-/*  Header components (self-contained, read nuqs directly)             */
-/* ------------------------------------------------------------------ */
 
 function ProviderHeader() {
   const models = useContext(ModelsContext)
@@ -1059,31 +1017,13 @@ function StructuredOutputHeader() {
   )
 }
 
-/* ------------------------------------------------------------------ */
-/*  Static column definitions                                          */
-/* ------------------------------------------------------------------ */
-
 export const columns: ColumnDef<FlatModel>[] = [
   {
     accessorKey: 'providerName',
     header: ProviderHeader,
     size: 185,
     cell: ({ row }) => {
-      const name = row.original.providerName
-      const hue = providerHue(name)
-      return (
-        <Badge
-          variant="secondary"
-          className="text-xs font-medium"
-          style={{
-            backgroundColor: `hsl(${hue} 70% 92%)`,
-            color: `hsl(${hue} 80% 25%)`,
-            borderColor: `hsl(${hue} 60% 80%)`,
-          }}
-        >
-          {name}
-        </Badge>
-      )
+      return row.original.providerName
     },
   },
   {
@@ -1111,21 +1051,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: StatusHeader,
     size: 130,
     cell: ({ row }) => {
-      const status = row.original.status
-      const hue = statusHue(status)
-      return (
-        <Badge
-          variant="secondary"
-          className="text-xs font-medium"
-          style={{
-            backgroundColor: `hsl(${hue} 70% 92%)`,
-            color: `hsl(${hue} 80% 25%)`,
-            borderColor: `hsl(${hue} 60% 80%)`,
-          }}
-        >
-          {status}
-        </Badge>
-      )
+      return row.original.status
     },
   },
   {
@@ -1265,13 +1191,9 @@ export const columns: ColumnDef<FlatModel>[] = [
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-1">
         {row.original.modalitiesInput.map((m) => (
-          <Badge
-            key={m}
-            variant="secondary"
-            className="px-1.5 py-0 text-[10px]"
-          >
+          <span key={m} className="px-1.5 py-0 text-[10px]">
             {m}
-          </Badge>
+          </span>
         ))}
       </div>
     ),
@@ -1283,9 +1205,9 @@ export const columns: ColumnDef<FlatModel>[] = [
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-1">
         {row.original.modalitiesOutput.map((m) => (
-          <Badge key={m} variant="outline" className="px-1.5 py-0 text-[10px]">
+          <span key={m} className="px-1.5 py-0 text-[10px]">
             {m}
-          </Badge>
+          </span>
         ))}
       </div>
     ),
