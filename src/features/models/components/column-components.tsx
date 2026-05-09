@@ -174,7 +174,7 @@ function CheckboxFilterList({
         />
       </div>
       <ScrollArea className="h-64">
-        <div className="space-y-0.5 p-2">
+        <div className="w-full max-w-56 space-y-0.5 p-2">
           {filtered.map((opt) => (
             <label
               key={opt.id}
