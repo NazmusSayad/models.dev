@@ -257,28 +257,44 @@ export function useModelData(models: FlatModel[]) {
       )
     }
     if (costInputMin !== null) {
-      result = result.filter((m) => m.costInput >= costInputMin)
+      result = result.filter(
+        (m) => m.costInput != null && m.costInput >= costInputMin
+      )
     }
     if (costInputMax !== null) {
-      result = result.filter((m) => m.costInput <= costInputMax)
+      result = result.filter(
+        (m) => m.costInput != null && m.costInput <= costInputMax
+      )
     }
     if (costOutputMin !== null) {
-      result = result.filter((m) => m.costOutput >= costOutputMin)
+      result = result.filter(
+        (m) => m.costOutput != null && m.costOutput >= costOutputMin
+      )
     }
     if (costOutputMax !== null) {
-      result = result.filter((m) => m.costOutput <= costOutputMax)
+      result = result.filter(
+        (m) => m.costOutput != null && m.costOutput <= costOutputMax
+      )
     }
     if (costCacheReadMin !== null) {
-      result = result.filter((m) => m.costCacheRead >= costCacheReadMin)
+      result = result.filter(
+        (m) => m.costCacheRead != null && m.costCacheRead >= costCacheReadMin
+      )
     }
     if (costCacheReadMax !== null) {
-      result = result.filter((m) => m.costCacheRead <= costCacheReadMax)
+      result = result.filter(
+        (m) => m.costCacheRead != null && m.costCacheRead <= costCacheReadMax
+      )
     }
     if (costCacheWriteMin !== null) {
-      result = result.filter((m) => m.costCacheWrite >= costCacheWriteMin)
+      result = result.filter(
+        (m) => m.costCacheWrite != null && m.costCacheWrite >= costCacheWriteMin
+      )
     }
     if (costCacheWriteMax !== null) {
-      result = result.filter((m) => m.costCacheWrite <= costCacheWriteMax)
+      result = result.filter(
+        (m) => m.costCacheWrite != null && m.costCacheWrite <= costCacheWriteMax
+      )
     }
     if (costOver200kInputMin !== null) {
       result = result.filter((m) =>
@@ -337,22 +353,34 @@ export function useModelData(models: FlatModel[]) {
       )
     }
     if (contextLimitMin !== null) {
-      result = result.filter((m) => m.contextLimit >= contextLimitMin)
+      result = result.filter(
+        (m) => m.contextLimit != null && m.contextLimit >= contextLimitMin
+      )
     }
     if (contextLimitMax !== null) {
-      result = result.filter((m) => m.contextLimit <= contextLimitMax)
+      result = result.filter(
+        (m) => m.contextLimit != null && m.contextLimit <= contextLimitMax
+      )
     }
     if (inputLimitMin !== null) {
-      result = result.filter((m) => m.inputLimit >= inputLimitMin)
+      result = result.filter(
+        (m) => m.inputLimit != null && m.inputLimit >= inputLimitMin
+      )
     }
     if (inputLimitMax !== null) {
-      result = result.filter((m) => m.inputLimit <= inputLimitMax)
+      result = result.filter(
+        (m) => m.inputLimit != null && m.inputLimit <= inputLimitMax
+      )
     }
     if (outputLimitMin !== null) {
-      result = result.filter((m) => m.outputLimit >= outputLimitMin)
+      result = result.filter(
+        (m) => m.outputLimit != null && m.outputLimit >= outputLimitMin
+      )
     }
     if (outputLimitMax !== null) {
-      result = result.filter((m) => m.outputLimit <= outputLimitMax)
+      result = result.filter(
+        (m) => m.outputLimit != null && m.outputLimit <= outputLimitMax
+      )
     }
 
     if (sort && (dir === 'asc' || dir === 'desc')) {

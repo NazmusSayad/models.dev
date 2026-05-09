@@ -9,7 +9,7 @@ import {
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { ColumnDef } from '@tanstack/react-table'
-import { formatDate, formatNumber } from '../helpers/column'
+import { formatDate } from '../helpers/column'
 import { FlatModel } from '../helpers/data'
 import {
   AttachmentHeader,
@@ -23,7 +23,6 @@ import {
   CostOver200kCacheWriteHeader,
   CostOver200kInputHeader,
   CostOver200kOutputHeader,
-  CostRenderer,
   FamilyHeader,
   InputLimitHeader,
   KnowledgeHeader,
@@ -31,6 +30,7 @@ import {
   ModalitiesInputHeader,
   ModalitiesOutputHeader,
   ModelHeader,
+  NumberValueRenderer,
   OpenWeightsHeader,
   OutputLimitHeader,
   ProviderHeader,
@@ -116,44 +116,65 @@ export const columns: ColumnDef<FlatModel>[] = [
     accessorKey: 'costInput',
     header: CostInputHeader,
     size: 140,
-    cell: ({ row }) => <CostRenderer value={row.original.costInput} />,
+    cell: ({ row }) => (
+      <NumberValueRenderer unit="dollar" value={row.original.costInput} />
+    ),
   },
   {
     accessorKey: 'costOutput',
     header: CostOutputHeader,
     size: 150,
-    cell: ({ row }) => <CostRenderer value={row.original.costOutput} />,
+    cell: ({ row }) => (
+      <NumberValueRenderer unit="dollar" value={row.original.costOutput} />
+    ),
   },
   {
     accessorKey: 'costCacheRead',
     header: CostCacheReadHeader,
     size: 140,
-    cell: ({ row }) => <CostRenderer value={row.original.costCacheRead} />,
+    cell: ({ row }) => (
+      <NumberValueRenderer unit="number" value={row.original.costCacheRead} />
+    ),
   },
   {
     accessorKey: 'costCacheWrite',
     header: CostCacheWriteHeader,
     size: 150,
-    cell: ({ row }) => <CostRenderer value={row.original.costCacheWrite} />,
+    cell: ({ row }) => (
+      <NumberValueRenderer unit="number" value={row.original.costCacheWrite} />
+    ),
   },
   {
     accessorKey: 'costOver200kInput',
     header: CostOver200kInputHeader,
     size: 160,
-    cell: ({ row }) => <CostRenderer value={row.original.costOver200kInput} />,
+    cell: ({ row }) => (
+      <NumberValueRenderer
+        unit="dollar"
+        value={row.original.costOver200kInput}
+      />
+    ),
   },
   {
     accessorKey: 'costOver200kOutput',
     header: CostOver200kOutputHeader,
     size: 160,
-    cell: ({ row }) => <CostRenderer value={row.original.costOver200kOutput} />,
+    cell: ({ row }) => (
+      <NumberValueRenderer
+        unit="dollar"
+        value={row.original.costOver200kOutput}
+      />
+    ),
   },
   {
     accessorKey: 'costOver200kCacheRead',
     header: CostOver200kCacheReadHeader,
     size: 160,
     cell: ({ row }) => (
-      <CostRenderer value={row.original.costOver200kCacheRead} />
+      <NumberValueRenderer
+        unit="dollar"
+        value={row.original.costOver200kCacheRead}
+      />
     ),
   },
   {
@@ -161,7 +182,10 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: CostOver200kCacheWriteHeader,
     size: 160,
     cell: ({ row }) => (
-      <CostRenderer value={row.original.costOver200kCacheWrite} />
+      <NumberValueRenderer
+        unit="dollar"
+        value={row.original.costOver200kCacheWrite}
+      />
     ),
   },
   {
@@ -217,9 +241,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: ContextLimitHeader,
     size: 130,
     cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
-        {formatNumber(row.original.contextLimit)}
-      </span>
+      <NumberValueRenderer unit="number" value={row.original.contextLimit} />
     ),
   },
   {
@@ -227,9 +249,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: InputLimitHeader,
     size: 160,
     cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
-        {formatNumber(row.original.inputLimit)}
-      </span>
+      <NumberValueRenderer unit="number" value={row.original.inputLimit} />
     ),
   },
   {
@@ -237,9 +257,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: OutputLimitHeader,
     size: 170,
     cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
-        {formatNumber(row.original.outputLimit)}
-      </span>
+      <NumberValueRenderer unit="number" value={row.original.outputLimit} />
     ),
   },
   {

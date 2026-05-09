@@ -3,7 +3,13 @@
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { formatNumberIntoHumanReadable } from '@/lib/number'
 import { cn } from '@/lib/utils'
 import {
   Cancel01Icon,
@@ -19,36 +25,49 @@ import {
   parseAsString,
   useQueryState,
 } from 'nuqs'
-import {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
-import { createPortal } from 'react-dom'
+import { memo, useCallback, useContext, useMemo, useState } from 'react'
 import { ModelsContext } from '../contexts/column-context'
 
-export function CostRenderer({ value }: { value?: number | null }) {
-  if (value == null) {
+export function NumberValueRenderer({
+  value,
+  unit,
+}: {
+  value?: number | null
+  unit: 'dollar' | 'number'
+}) {
+  if (value == null || Number.isNaN(value)) {
     return <span className="text-muted-foreground text-sm">-</span>
   }
 
-  if (value === 0) {
-    return <span className="text-muted-foreground text-sm">Free</span>
+  if (unit === 'dollar') {
+    if (value === 0) {
+      return <span className="text-muted-foreground text-sm">Free</span>
+    }
+
+    return (
+      <span className="text-foreground text-sm font-thin tabular-nums">
+        {value < 0.01
+          ? `$${value.toFixed(4)}`
+          : value < 1
+            ? `$${value.toFixed(2)}`
+            : `$${value.toFixed(2)}`}
+      </span>
+    )
   }
 
-  return (
-    <span className="text-foreground text-sm font-thin tabular-nums">
-      {value < 0.01
-        ? `$${value.toFixed(4)}`
-        : value < 1
-          ? `$${value.toFixed(2)}`
-          : `$${value.toFixed(2)}`}
-    </span>
-  )
+  if (unit === 'number') {
+    if (value === 0) {
+      return <span className="text-muted-foreground text-sm">0</span>
+    }
+
+    return (
+      <span className="text-foreground text-sm font-thin tabular-nums">
+        {formatNumberIntoHumanReadable(value)}
+      </span>
+    )
+  }
+
+  throw new Error('Invalid unit')
 }
 
 export function BooleanCell({ value }: { value: boolean }) {
@@ -78,74 +97,24 @@ function FilterDropdownComponent({
   active: boolean
   children: React.ReactNode
 }) {
-  const [open, setOpen] = useState(false)
-  const triggerRef = useRef<HTMLButtonElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const [pos, setPos] = useState({ top: 0, left: 0 })
-
-  useEffect(() => {
-    if (!open) return
-    function updatePos() {
-      const rect = triggerRef.current?.getBoundingClientRect()
-      if (rect) {
-        setPos({
-          top: rect.bottom + window.scrollY + 4,
-          left: rect.left + window.scrollX,
-        })
-      }
-    }
-    updatePos()
-    window.addEventListener('resize', updatePos)
-    window.addEventListener('scroll', updatePos, true)
-    function handler(e: MouseEvent) {
-      const target = e.target as Node
-      if (
-        contentRef.current?.contains(target) ||
-        triggerRef.current?.contains(target)
-      ) {
-        return
-      }
-      setOpen(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => {
-      document.removeEventListener('mousedown', handler)
-      window.removeEventListener('resize', updatePos)
-      window.removeEventListener('scroll', updatePos, true)
-    }
-  }, [open])
-
   return (
-    <>
-      <button
-        ref={triggerRef}
-        onClick={() => setOpen((v) => !v)}
-        className={cn(
-          'flex h-5 w-5 items-center justify-center rounded transition-colors',
-          active
-            ? 'text-primary bg-primary/10 opacity-100'
-            : 'text-muted-foreground hover:bg-muted hover:text-foreground opacity-0 group-hover:opacity-100'
-        )}
-      >
-        <HugeiconsIcon icon={FilterIcon} className="h-3 w-3" />
-      </button>
-      {open &&
-        createPortal(
-          <div
-            ref={contentRef}
-            className="bg-popover text-popover-foreground z-50 w-56 overflow-hidden rounded-md border p-0 shadow-md"
-            style={{
-              position: 'absolute',
-              top: pos.top,
-              left: pos.left,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {children}
-          </div>,
-          document.body
-        )}
-    </>
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          className={cn(
+            'flex h-5 w-5 items-center justify-center rounded transition-colors',
+            active
+              ? 'text-primary bg-primary/10 opacity-100'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground opacity-0 group-hover:opacity-100'
+          )}
+        >
+          <HugeiconsIcon icon={FilterIcon} className="h-3 w-3" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-56 p-0" align="start">
+        {children}
+      </PopoverContent>
+    </Popover>
   )
 }
 const FilterDropdown = memo(FilterDropdownComponent)
