@@ -133,7 +133,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: CostCacheReadHeader,
     size: 140,
     cell: ({ row }) => (
-      <NumberValueRenderer unit="number" value={row.original.costCacheRead} />
+      <NumberValueRenderer unit="dollar" value={row.original.costCacheRead} />
     ),
   },
   {
@@ -141,7 +141,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     header: CostCacheWriteHeader,
     size: 150,
     cell: ({ row }) => (
-      <NumberValueRenderer unit="number" value={row.original.costCacheWrite} />
+      <NumberValueRenderer unit="dollar" value={row.original.costCacheWrite} />
     ),
   },
   {
