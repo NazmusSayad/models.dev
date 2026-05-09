@@ -110,10 +110,7 @@ export function ModelsTable({
           </div>
 
           {rows.length === 0 ? (
-            <div
-              className="flex flex-col items-center justify-center gap-3 py-16"
-              style={{ width: tableWidth }}
-            >
+            <div className="absolute flex h-[80%] w-full flex-col items-center justify-center gap-3 py-16">
               <p className="text-muted-foreground text-sm">
                 No models match the current filters
               </p>

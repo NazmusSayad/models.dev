@@ -1,4 +1,5 @@
 import { TextCopyButton } from '@/components/copy-button'
+import { cn } from '@/lib/utils'
 import {
   AudioWave01Icon,
   Image01Icon,
@@ -56,7 +57,7 @@ export const columns: ColumnDef<FlatModel>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2">
-          <span className="text-foreground text-sm font-medium">
+          <span className="text-foreground text-sm">
             {row.original.providerName}
           </span>
 
@@ -73,7 +74,13 @@ export const columns: ColumnDef<FlatModel>[] = [
     size: 300,
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <span className="text-foreground text-sm font-medium">
+        <span
+          className={cn(
+            'text-foreground text-sm',
+            row.original.status === 'deprecated' &&
+              'text-muted-foreground line-through'
+          )}
+        >
           {row.original.name}
         </span>
 

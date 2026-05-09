@@ -26,7 +26,7 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
             </h1>
           </Link>
 
-          <span className="text-muted-foreground bg-muted rounded-full px-2.5 py-0.5 text-xs font-medium">
+          <span className="text-muted-foreground bg-muted rounded-full px-2.5 py-0.5 text-xs">
             {filteredModels.length.toLocaleString()} /{' '}
             {models.length.toLocaleString()}
           </span>
