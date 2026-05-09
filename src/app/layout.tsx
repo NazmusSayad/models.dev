@@ -14,8 +14,9 @@ const rubik = Rubik({
 })
 
 export const metadata: Metadata = {
-  title: 'Models',
-  description: 'Browse AI models from providers around the world',
+  title: 'OpenSource AI Models DB - models.dev (UI)',
+  description:
+    'Browse AI models from providers around the world from models.dev in a beautiful, fast UI',
 }
 
 export default function Layout({ children }: PropsWithChildren) {

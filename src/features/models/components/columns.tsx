@@ -60,7 +60,9 @@ export const columns: ColumnDef<FlatModel>[] = [
             {row.original.providerName}
           </span>
 
-          <TextCopyButton text={row.original.providerId} />
+          <span className="text-muted-foreground text-lg">
+            <TextCopyButton text={row.original.providerId} />
+          </span>
         </div>
       )
     },
@@ -75,7 +77,9 @@ export const columns: ColumnDef<FlatModel>[] = [
           {row.original.name}
         </span>
 
-        <TextCopyButton text={row.original.id} />
+        <span className="text-muted-foreground text-lg">
+          <TextCopyButton text={row.original.id} />{' '}
+        </span>
       </div>
     ),
   },
