@@ -20,12 +20,12 @@ async function main() {
         sharp(Buffer.from(logoSVG))
           .resize(size, size)
           .png()
-          .toFile(path.join(outputDir, `white-${size}.png`)),
+          .toFile(path.join(outputDir, `logo-${size}.png`)),
 
         sharp(Buffer.from(logoSVG))
           .resize(size, size)
           .webp()
-          .toFile(path.join(outputDir, `white-${size}.webp`)),
+          .toFile(path.join(outputDir, `logo-${size}.webp`)),
       ])
     })
   )
