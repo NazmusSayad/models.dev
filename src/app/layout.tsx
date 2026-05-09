@@ -17,6 +17,16 @@ export const metadata: Metadata = {
   title: 'OpenSource AI Models DB - models.dev (UI)',
   description:
     'Browse AI models from providers around the world from models.dev in a beautiful, fast UI',
+  icons: {
+    icon: '/logo/logo-64.png',
+  },
+  openGraph: {
+    images: [{ url: '/og-image.png' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/og-image.png'],
+  },
 }
 
 export default function Layout({ children }: PropsWithChildren) {

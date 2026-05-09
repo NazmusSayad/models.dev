@@ -19,11 +19,13 @@ async function main() {
       await Promise.all([
         sharp(Buffer.from(logoSVG))
           .resize(size, size)
+          .rotate(270)
           .png()
           .toFile(path.join(outputDir, `logo-${size}.png`)),
 
         sharp(Buffer.from(logoSVG))
           .resize(size, size)
+          .rotate(270)
           .webp()
           .toFile(path.join(outputDir, `logo-${size}.webp`)),
       ])
