@@ -31,6 +31,26 @@ import {
 import { createPortal } from 'react-dom'
 import { ModelsContext } from '../contexts/column-context'
 
+export function CostRenderer({ value }: { value?: number | null }) {
+  if (value == null) {
+    return <span className="text-muted-foreground text-sm">-</span>
+  }
+
+  if (value === 0) {
+    return <span className="text-muted-foreground text-sm">Free</span>
+  }
+
+  return (
+    <span className="text-foreground text-sm tabular-nums">
+      {value < 0.01
+        ? `$${value.toFixed(4)}`
+        : value < 1
+          ? `$${value.toFixed(2)}`
+          : `$${value.toFixed(2)}`}
+    </span>
+  )
+}
+
 export function BooleanCell({ value }: { value: boolean }) {
   return value ? (
     <HugeiconsIcon

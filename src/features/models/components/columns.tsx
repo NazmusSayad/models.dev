@@ -1,5 +1,13 @@
+import {
+  AudioWave01Icon,
+  Image01Icon,
+  Pdf01Icon,
+  TextIcon,
+  Video01Icon,
+} from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 import { ColumnDef } from '@tanstack/react-table'
-import { formatCost, formatDate, formatNumber } from '../helpers/column'
+import { formatDate, formatNumber } from '../helpers/column'
 import { FlatModel } from '../helpers/data'
 import {
   AttachmentHeader,
@@ -12,6 +20,7 @@ import {
   CostOver200kCacheReadHeader,
   CostOver200kInputHeader,
   CostOver200kOutputHeader,
+  CostRenderer,
   FamilyHeader,
   InputLimitHeader,
   KnowledgeHeader,
@@ -28,6 +37,14 @@ import {
   StructuredOutputHeader,
   ToolCallHeader,
 } from './column-components'
+
+const modalityIconMap: Record<string, typeof TextIcon> = {
+  text: TextIcon,
+  image: Image01Icon,
+  audio: AudioWave01Icon,
+  video: Video01Icon,
+  pdf: Pdf01Icon,
+}
 
 export const columns: ColumnDef<FlatModel>[] = [
   {
@@ -74,76 +91,44 @@ export const columns: ColumnDef<FlatModel>[] = [
     accessorKey: 'costInput',
     header: CostInputHeader,
     size: 140,
-    cell: ({ row }) => (
-      <span className="text-foreground text-sm tabular-nums">
-        {formatCost(row.original.costInput)}
-      </span>
-    ),
+    cell: ({ row }) => <CostRenderer value={row.original.costInput} />,
   },
   {
     accessorKey: 'costOutput',
     header: CostOutputHeader,
     size: 150,
-    cell: ({ row }) => (
-      <span className="text-foreground text-sm tabular-nums">
-        {formatCost(row.original.costOutput)}
-      </span>
-    ),
+    cell: ({ row }) => <CostRenderer value={row.original.costOutput} />,
   },
   {
     accessorKey: 'costCacheRead',
     header: CostCacheReadHeader,
     size: 140,
-    cell: ({ row }) => (
-      <span className="text-foreground text-sm tabular-nums">
-        {formatCost(row.original.costCacheRead)}
-      </span>
-    ),
+    cell: ({ row }) => <CostRenderer value={row.original.costCacheRead} />,
   },
   {
     accessorKey: 'costCacheWrite',
     header: CostCacheWriteHeader,
     size: 150,
-    cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
-        {formatCost(row.original.costCacheWrite)}
-      </span>
-    ),
+    cell: ({ row }) => <CostRenderer value={row.original.costCacheWrite} />,
   },
   {
     accessorKey: 'costOver200kInput',
     header: CostOver200kInputHeader,
     size: 160,
-    cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
-        {row.original.costOver200kInput
-          ? formatCost(row.original.costOver200kInput)
-          : '-'}
-      </span>
-    ),
+    cell: ({ row }) => <CostRenderer value={row.original.costOver200kInput} />,
   },
   {
     accessorKey: 'costOver200kOutput',
     header: CostOver200kOutputHeader,
     size: 160,
-    cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
-        {row.original.costOver200kOutput
-          ? formatCost(row.original.costOver200kOutput)
-          : '-'}
-      </span>
-    ),
+    cell: ({ row }) => <CostRenderer value={row.original.costOver200kOutput} />,
   },
   {
     accessorKey: 'costOver200kCacheRead',
     header: CostOver200kCacheReadHeader,
     size: 160,
     cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
-        {row.original.costOver200kCacheRead
-          ? formatCost(row.original.costOver200kCacheRead)
-          : '-'}
-      </span>
+      <CostRenderer value={row.original.costOver200kCacheRead} />
     ),
   },
   {
@@ -152,11 +137,21 @@ export const columns: ColumnDef<FlatModel>[] = [
     size: 150,
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-1">
-        {row.original.modalitiesInput.map((m) => (
-          <span key={m} className="px-1.5 py-0 text-[10px]">
-            {m}
-          </span>
-        ))}
+        {row.original.modalitiesInput.map((m) => {
+          const icon = modalityIconMap[m]
+          return icon ? (
+            <div key={m} title={m}>
+              <HugeiconsIcon
+                icon={icon}
+                className="text-muted-foreground size-4"
+              />
+            </div>
+          ) : (
+            <span key={m} className="text-[10px]">
+              {m}
+            </span>
+          )
+        })}
       </div>
     ),
   },
@@ -166,11 +161,21 @@ export const columns: ColumnDef<FlatModel>[] = [
     size: 150,
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-1">
-        {row.original.modalitiesOutput.map((m) => (
-          <span key={m} className="px-1.5 py-0 text-[10px]">
-            {m}
-          </span>
-        ))}
+        {row.original.modalitiesOutput.map((m) => {
+          const icon = modalityIconMap[m]
+          return icon ? (
+            <div key={m} title={m}>
+              <HugeiconsIcon
+                icon={icon}
+                className="text-muted-foreground size-4"
+              />
+            </div>
+          ) : (
+            <span key={m} className="text-[10px]">
+              {m}
+            </span>
+          )
+        })}
       </div>
     ),
   },

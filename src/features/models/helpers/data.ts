@@ -131,6 +131,7 @@ export interface FlatModel {
   costOver200kInput?: number
   costOver200kOutput?: number
   costOver200kCacheRead?: number
+  costOver200kCacheWrite?: number
   structuredOutput: boolean
   status: string
 }
