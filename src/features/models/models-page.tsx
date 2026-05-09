@@ -1,6 +1,7 @@
 'use client'
 
-import { SearchX } from 'lucide-react'
+import { SearchRemoveIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 import { ColumnToggle } from './components/column-toggle'
 import { ModelsTable } from './components/models-table'
 import { SearchBar } from './components/search-bar'
@@ -18,14 +19,42 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
     uniqueProviders,
     uniqueFamilies,
     uniqueModalities,
+    uniqueStatuses,
     activeCount,
     setProviders,
     setFamilies,
     setModalities,
+    setStatus,
     setOpenWeights,
     setReasoning,
     setToolCall,
     setAttachment,
+    setStructuredOutput,
+    setKnowledgeQuery,
+    setReleaseDateFrom,
+    setReleaseDateTo,
+    setLastUpdatedFrom,
+    setLastUpdatedTo,
+    setCostInputMin,
+    setCostInputMax,
+    setCostOutputMin,
+    setCostOutputMax,
+    setCostCacheReadMin,
+    setCostCacheReadMax,
+    setCostCacheWriteMin,
+    setCostCacheWriteMax,
+    setCostOver200kInputMin,
+    setCostOver200kInputMax,
+    setCostOver200kOutputMin,
+    setCostOver200kOutputMax,
+    setCostOver200kCacheReadMin,
+    setCostOver200kCacheReadMax,
+    setContextLimitMin,
+    setContextLimitMax,
+    setInputLimitMin,
+    setInputLimitMax,
+    setOutputLimitMin,
+    setOutputLimitMax,
   } = useModelData(models)
 
   const columnVisibility = useColumnStore((s) => s.visibility)
@@ -56,17 +85,48 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
           setProviders={setProviders}
           setFamilies={setFamilies}
           setModalities={setModalities}
+          setStatus={setStatus}
           setOpenWeights={setOpenWeights}
           setReasoning={setReasoning}
           setToolCall={setToolCall}
           setAttachment={setAttachment}
+          setStructuredOutput={setStructuredOutput}
+          setKnowledgeQuery={setKnowledgeQuery}
+          setReleaseDateFrom={setReleaseDateFrom}
+          setReleaseDateTo={setReleaseDateTo}
+          setLastUpdatedFrom={setLastUpdatedFrom}
+          setLastUpdatedTo={setLastUpdatedTo}
+          setCostInputMin={setCostInputMin}
+          setCostInputMax={setCostInputMax}
+          setCostOutputMin={setCostOutputMin}
+          setCostOutputMax={setCostOutputMax}
+          setCostCacheReadMin={setCostCacheReadMin}
+          setCostCacheReadMax={setCostCacheReadMax}
+          setCostCacheWriteMin={setCostCacheWriteMin}
+          setCostCacheWriteMax={setCostCacheWriteMax}
+          setCostOver200kInputMin={setCostOver200kInputMin}
+          setCostOver200kInputMax={setCostOver200kInputMax}
+          setCostOver200kOutputMin={setCostOver200kOutputMin}
+          setCostOver200kOutputMax={setCostOver200kOutputMax}
+          setCostOver200kCacheReadMin={setCostOver200kCacheReadMin}
+          setCostOver200kCacheReadMax={setCostOver200kCacheReadMax}
+          setContextLimitMin={setContextLimitMin}
+          setContextLimitMax={setContextLimitMax}
+          setInputLimitMin={setInputLimitMin}
+          setInputLimitMax={setInputLimitMax}
+          setOutputLimitMin={setOutputLimitMin}
+          setOutputLimitMax={setOutputLimitMax}
           uniqueProviders={uniqueProviders}
           uniqueFamilies={uniqueFamilies}
           uniqueModalities={uniqueModalities}
+          uniqueStatuses={uniqueStatuses}
         />
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-md border">
-          <SearchX className="text-muted-foreground h-10 w-10" />
+          <HugeiconsIcon
+            icon={SearchRemoveIcon}
+            className="text-muted-foreground h-10 w-10"
+          />
           <div className="text-center">
             <p className="text-foreground text-sm font-medium">
               No models found

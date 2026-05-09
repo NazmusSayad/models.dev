@@ -3,11 +3,11 @@ import '@/styles/index.css'
 import { cn } from '@/lib/utils'
 import { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
-import { Geist } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { PropsWithChildren } from 'react'
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
   title: 'Models',
@@ -19,7 +19,7 @@ export default function Layout({ children }: PropsWithChildren) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn('font-sans', geist.variable)}
+      className={cn('font-sans', inter.variable)}
     >
       <body className="antialiased">
         <ThemeProvider attribute="class" enableSystem>

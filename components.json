@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "radix-nova",
-  "rsc": false,
+  "style": "radix-mira",
+  "rsc": true,
   "tsx": true,
   "tailwind": {
     "config": "",
@@ -9,7 +9,7 @@
     "baseColor": "neutral",
     "cssVariables": true
   },
-  "iconLibrary": "lucide",
+  "iconLibrary": "hugeicons",
   "rtl": false,
   "aliases": {
     "components": "@/components",

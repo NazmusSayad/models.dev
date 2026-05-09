@@ -1,7 +1,8 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
-import { Search, X } from 'lucide-react'
+import { Cancel01Icon, Search01Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 
 interface SearchBarProps {
   value: string
@@ -11,7 +12,10 @@ interface SearchBarProps {
 export function SearchBar({ value, onChange }: SearchBarProps) {
   return (
     <div className="relative w-full max-w-sm">
-      <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+      <HugeiconsIcon
+        icon={Search01Icon}
+        className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4"
+      />
       <Input
         type="text"
         placeholder="Search models, providers, families..."
@@ -24,7 +28,7 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
           onClick={() => onChange('')}
           className="text-muted-foreground hover:text-foreground absolute top-1.5 right-2 flex h-5 w-5 items-center justify-center rounded-sm"
         >
-          <X className="h-3.5 w-3.5" />
+          <HugeiconsIcon icon={Cancel01Icon} className="h-3.5 w-3.5" />
         </button>
       )}
     </div>

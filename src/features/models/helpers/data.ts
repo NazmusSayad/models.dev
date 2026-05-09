@@ -13,10 +13,12 @@ export function normalizeModels(data: unknown): FlatModel[] {
       const model = provider.models[modelId] as Record<string, unknown>
       if (!model || typeof model !== 'object') continue
 
-      const cost = (model.cost as Record<string, number>) || {}
+      const cost = (model.cost as Record<string, unknown>) || {}
       const limit = (model.limit as Record<string, number>) || {}
       const modalities =
         (model.modalities as { input?: string[]; output?: string[] }) || {}
+      const contextOver200k =
+        (cost.context_over_200k as Record<string, number>) || {}
 
       models.push({
         providerId,
@@ -34,10 +36,18 @@ export function normalizeModels(data: unknown): FlatModel[] {
         modalitiesInput: modalities.input || [],
         modalitiesOutput: modalities.output || [],
         open_weights: !!model.open_weights,
-        costInput: cost.input ?? 0,
-        costOutput: cost.output ?? 0,
+        costInput: (cost.input as number) ?? 0,
+        costOutput: (cost.output as number) ?? 0,
+        costCacheRead: (cost.cache_read as number) ?? 0,
+        costCacheWrite: (cost.cache_write as number) ?? 0,
         contextLimit: limit.context ?? 0,
+        inputLimit: limit.input ?? 0,
         outputLimit: limit.output ?? 0,
+        costOver200kInput: contextOver200k.input ?? 0,
+        costOver200kOutput: contextOver200k.output ?? 0,
+        costOver200kCacheRead: contextOver200k.cache_read ?? 0,
+        structuredOutput: !!model.structured_output,
+        status: (model.status as string) || 'active',
       })
     }
   }
@@ -64,7 +74,11 @@ export interface ApiModel {
     cache_read?: number
     cache_write?: number
     reasoning?: number
-    context_over_200k?: { input?: number; output?: number; cache_read?: number }
+    context_over_200k?: {
+      input?: number
+      output?: number
+      cache_read?: number
+    }
   }
   limit?: {
     context?: number
@@ -72,6 +86,7 @@ export interface ApiModel {
     input?: number
   }
   structured_output?: boolean
+  status?: string
   interleaved?: { field: string }
   experimental?: Record<string, unknown>
 }
@@ -108,6 +123,14 @@ export interface FlatModel {
   open_weights: boolean
   costInput: number
   costOutput: number
+  costCacheRead: number
+  costCacheWrite: number
   contextLimit: number
+  inputLimit: number
   outputLimit: number
+  costOver200kInput: number
+  costOver200kOutput: number
+  costOver200kCacheRead: number
+  structuredOutput: boolean
+  status: string
 }

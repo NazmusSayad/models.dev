@@ -7,6 +7,12 @@ settings:
 importers:
   .:
     dependencies:
+      '@hugeicons/core-free-icons':
+        specifier: ^4.1.2
+        version: 4.1.2
+      '@hugeicons/react':
+        specifier: ^1.1.6
+        version: 1.1.6(react@19.2.6)
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -22,9 +28,6 @@ importers:
       fuse.js:
         specifier: ^7.3.0
         version: 7.3.0
-      lucide-react:
-        specifier: ^1
-        version: 1.14.0(react@19.2.6)
       minisearch:
         specifier: ^7.2.0
         version: 7.2.0
@@ -509,6 +512,20 @@ packages:
     engines: { node: '>=18.14.1' }
     peerDependencies:
       hono: ^4
+
+  '@hugeicons/core-free-icons@4.1.2':
+    resolution:
+      {
+        integrity: sha512-7PfGYaUyExpAMA8ZC7gfXykttrBDIUutU/yQHIBgz0L61ENSM73mqg/9hCTZemiEUVtj2raRRjhoJMGdAFwetQ==,
+      }
+
+  '@hugeicons/react@1.1.6':
+    resolution:
+      {
+        integrity: sha512-c2LhXJMAW5wN1pC/smBXG0YPqUON6ceR/ZdXHCjEI9KvB+hjtqYjmzIxok5hAQOeXGz0WtORgCQMzqewFKAZwg==,
+      }
+    peerDependencies:
+      react: '>=16.0.0'
 
   '@humanfs/core@0.19.2':
     resolution:
@@ -4674,14 +4691,6 @@ packages:
         integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==,
       }
 
-  lucide-react@1.14.0:
-    resolution:
-      {
-        integrity: sha512-+1mdWcfSJVUsaTIjN9zoezmUhfXo5l0vP7ekBMPo3jcS/aIkxHnXqAPsByszMZx/Y8oQBRJxJx5xg+RH3urzxA==,
-      }
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
   magic-string@0.30.21:
     resolution:
       {
@@ -6718,6 +6727,12 @@ snapshots:
   '@hono/node-server@1.19.14(hono@4.12.18)':
     dependencies:
       hono: 4.12.18
+
+  '@hugeicons/core-free-icons@4.1.2': {}
+
+  '@hugeicons/react@1.1.6(react@19.2.6)':
+    dependencies:
+      react: 19.2.6
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -9422,10 +9437,6 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
-
-  lucide-react@1.14.0(react@19.2.6):
-    dependencies:
-      react: 19.2.6
 
   magic-string@0.30.21:
     dependencies:

@@ -7,7 +7,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Columns3 } from 'lucide-react'
+import { LayoutThreeColumnIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 import { useColumnStore } from '../store/use-column-store'
 
 const columnLabels: Record<string, string> = {
@@ -34,7 +35,7 @@ export function ColumnToggle() {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 gap-1.5 px-2.5">
-          <Columns3 className="h-4 w-4" />
+          <HugeiconsIcon icon={LayoutThreeColumnIcon} className="h-4 w-4" />
           <span className="text-xs">Columns</span>
           <span className="bg-muted text-muted-foreground ml-0.5 flex h-4 items-center rounded px-1 text-[10px]">
             {visibleCount}

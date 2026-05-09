@@ -38,11 +38,10 @@ const VirtualRow = memo(
         {cells.map((cell) => (
           <div
             key={cell.id}
-            className="flex items-center truncate px-3 py-2 text-sm"
+            className="flex shrink-0 grow-0 items-center truncate px-3 py-2 text-sm"
             style={{
               width: cell.size,
               minWidth: cell.size,
-              maxWidth: cell.size,
             }}
           >
             {cell.content}
@@ -82,6 +81,7 @@ export function ModelsTable({
   })
 
   const virtualItems = virtualizer.getVirtualItems()
+  const tableWidth = table.getTotalSize()
 
   return (
     <ScrollAreaPrimitive.Root className="relative min-h-0 w-full flex-1 overflow-hidden rounded-md border">
@@ -90,16 +90,18 @@ export function ModelsTable({
         className="size-full rounded-[inherit]"
       >
         {/* Sticky header */}
-        <div className="bg-background sticky top-0 z-10 flex w-full border-b shadow-xs">
+        <div
+          className="bg-background sticky top-0 z-10 flex border-b shadow-xs"
+          style={{ width: tableWidth, minWidth: tableWidth }}
+        >
           {table.getHeaderGroups().map((headerGroup) =>
             headerGroup.headers.map((header) => (
               <div
                 key={header.id}
-                className="text-muted-foreground flex items-center px-3 py-2.5 text-xs font-semibold tracking-wider uppercase select-none"
+                className="text-muted-foreground group flex shrink-0 grow-0 items-center truncate px-3 py-2.5 text-xs font-semibold tracking-wider whitespace-nowrap uppercase select-none"
                 style={{
                   width: header.getSize(),
                   minWidth: header.getSize(),
-                  maxWidth: header.getSize(),
                 }}
               >
                 {header.isPlaceholder
@@ -115,8 +117,12 @@ export function ModelsTable({
 
         {/* Virtual body */}
         <div
-          className="relative w-full"
-          style={{ height: `${virtualizer.getTotalSize()}px` }}
+          className="relative"
+          style={{
+            width: tableWidth,
+            minWidth: tableWidth,
+            height: `${virtualizer.getTotalSize()}px`,
+          }}
         >
           {virtualItems.map((virtualRow) => {
             const row = rows[virtualRow.index]
@@ -148,6 +154,12 @@ export function ModelsTable({
       <ScrollAreaPrimitive.ScrollAreaScrollbar
         orientation="vertical"
         className="flex touch-none p-px transition-colors select-none data-vertical:h-full data-vertical:w-2.5 data-vertical:border-l data-vertical:border-l-transparent"
+      >
+        <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
+      </ScrollAreaPrimitive.ScrollAreaScrollbar>
+      <ScrollAreaPrimitive.ScrollAreaScrollbar
+        orientation="horizontal"
+        className="flex touch-none p-px transition-colors select-none data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:w-full"
       >
         <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
       </ScrollAreaPrimitive.ScrollAreaScrollbar>
