@@ -24,8 +24,12 @@ export function useModelData(models: FlatModel[]) {
     'families',
     parseAsArrayOf(parseAsString).withDefault([])
   )
-  const [modalities, setModalities] = useQueryState(
-    'modalities',
+  const [modalitiesInput, setModalitiesInput] = useQueryState(
+    'modalitiesInput',
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [modalitiesOutput, setModalitiesOutput] = useQueryState(
+    'modalitiesOutput',
     parseAsArrayOf(parseAsString).withDefault([])
   )
   const [status, setStatus] = useQueryState(
@@ -224,12 +228,14 @@ export function useModelData(models: FlatModel[]) {
     if (structuredOutput !== null) {
       result = result.filter((m) => m.structuredOutput === structuredOutput)
     }
-    if (modalities.length > 0) {
+    if (modalitiesInput.length > 0) {
       result = result.filter((m) =>
-        modalities.some(
-          (mod) =>
-            m.modalitiesInput.includes(mod) || m.modalitiesOutput.includes(mod)
-        )
+        modalitiesInput.some((mod) => m.modalitiesInput.includes(mod))
+      )
+    }
+    if (modalitiesOutput.length > 0) {
+      result = result.filter((m) =>
+        modalitiesOutput.some((mod) => m.modalitiesOutput.includes(mod))
       )
     }
     if (knowledgeQuery !== null && knowledgeQuery.trim()) {
@@ -425,7 +431,8 @@ export function useModelData(models: FlatModel[]) {
     providers,
     families,
     status,
-    modalities,
+    modalitiesInput,
+    modalitiesOutput,
     openWeights,
     reasoning,
     toolCall,
@@ -471,7 +478,8 @@ export function useModelData(models: FlatModel[]) {
     (toolCall !== null ? 1 : 0) +
     (attachment !== null ? 1 : 0) +
     (structuredOutput !== null ? 1 : 0) +
-    modalities.length +
+    modalitiesInput.length +
+    modalitiesOutput.length +
     (knowledgeQuery !== null ? 1 : 0) +
     (releaseDateFrom !== null || releaseDateTo !== null ? 1 : 0) +
     (lastUpdatedFrom !== null || lastUpdatedTo !== null ? 1 : 0) +
@@ -495,7 +503,8 @@ export function useModelData(models: FlatModel[]) {
     void setSearch(null)
     void setProviders(null)
     void setFamilies(null)
-    void setModalities(null)
+    void setModalitiesInput(null)
+    void setModalitiesOutput(null)
     void setStatus(null)
     void setOpenWeights(null)
     void setReasoning(null)
@@ -533,7 +542,8 @@ export function useModelData(models: FlatModel[]) {
     setSearch,
     setProviders,
     setFamilies,
-    setModalities,
+    setModalitiesInput,
+    setModalitiesOutput,
     setStatus,
     setOpenWeights,
     setReasoning,

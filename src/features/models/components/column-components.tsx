@@ -12,6 +12,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { formatNumberIntoHumanReadable } from '@/lib/number'
 import { cn } from '@/lib/utils'
 import {
+  ArrowDown02Icon,
+  ArrowUp02Icon,
   Cancel01Icon,
   CheckmarkCircle01Icon,
   FilterIcon,
@@ -78,12 +80,27 @@ export function BooleanCell({ value }: { value: boolean }) {
 }
 
 function SortArrow({ sorted }: { sorted: false | 'asc' | 'desc' }) {
-  if (!sorted) return null
-  return (
-    <span className="ml-1 text-[10px] opacity-60">
-      {sorted === 'asc' ? '↑' : '↓'}
-    </span>
-  )
+  if (sorted === 'asc') {
+    return (
+      <HugeiconsIcon
+        strokeWidth={2}
+        icon={ArrowUp02Icon}
+        className="ml-1 size-4 opacity-60"
+      />
+    )
+  }
+
+  if (sorted === 'desc') {
+    return (
+      <HugeiconsIcon
+        strokeWidth={2}
+        icon={ArrowDown02Icon}
+        className="ml-1 size-4 opacity-60"
+      />
+    )
+  }
+
+  return null
 }
 
 function FilterDropdownComponent({
@@ -829,8 +846,8 @@ export function LastUpdatedHeader() {
 
 export function ModalitiesInputHeader() {
   const models = useContext(ModelsContext)
-  const [modalities, setModalities] = useQueryState(
-    'modalities',
+  const [modalitiesInput, setModalitiesInput] = useQueryState(
+    'modalitiesInput',
     parseAsArrayOf(parseAsString).withDefault([])
   )
   const { sorted, toggleSort } = useColumnSort('modalitiesInput')
@@ -839,7 +856,6 @@ export function ModalitiesInputHeader() {
     const set = new Set<string>()
     for (const m of models) {
       for (const mod of m.modalitiesInput) set.add(mod)
-      for (const mod of m.modalitiesOutput) set.add(mod)
     }
     return Array.from(set)
       .map((m) => ({ id: m, label: m }))
@@ -847,22 +863,22 @@ export function ModalitiesInputHeader() {
   }, [models])
 
   function toggle(id: string) {
-    const exists = modalities.includes(id)
+    const exists = modalitiesInput.includes(id)
     const next = exists
-      ? modalities.filter((v) => v !== id)
-      : [...modalities, id]
-    void setModalities(next.length > 0 ? next : null)
+      ? modalitiesInput.filter((v) => v !== id)
+      : [...modalitiesInput, id]
+    void setModalitiesInput(next.length > 0 ? next : null)
   }
 
   return (
     <FilterHeader
       label="Input"
-      active={modalities.length > 0}
+      active={modalitiesInput.length > 0}
       sorted={sorted}
       onSort={toggleSort}
     >
       <CheckboxFilterList
-        values={modalities}
+        values={modalitiesInput}
         options={options}
         onToggle={toggle}
       />
@@ -872,8 +888,8 @@ export function ModalitiesInputHeader() {
 
 export function ModalitiesOutputHeader() {
   const models = useContext(ModelsContext)
-  const [modalities, setModalities] = useQueryState(
-    'modalities',
+  const [modalitiesOutput, setModalitiesOutput] = useQueryState(
+    'modalitiesOutput',
     parseAsArrayOf(parseAsString).withDefault([])
   )
   const { sorted, toggleSort } = useColumnSort('modalitiesOutput')
@@ -881,7 +897,6 @@ export function ModalitiesOutputHeader() {
   const options = useMemo(() => {
     const set = new Set<string>()
     for (const m of models) {
-      for (const mod of m.modalitiesInput) set.add(mod)
       for (const mod of m.modalitiesOutput) set.add(mod)
     }
     return Array.from(set)
@@ -890,22 +905,22 @@ export function ModalitiesOutputHeader() {
   }, [models])
 
   function toggle(id: string) {
-    const exists = modalities.includes(id)
+    const exists = modalitiesOutput.includes(id)
     const next = exists
-      ? modalities.filter((v) => v !== id)
-      : [...modalities, id]
-    void setModalities(next.length > 0 ? next : null)
+      ? modalitiesOutput.filter((v) => v !== id)
+      : [...modalitiesOutput, id]
+    void setModalitiesOutput(next.length > 0 ? next : null)
   }
 
   return (
     <FilterHeader
       label="Output"
-      active={modalities.length > 0}
+      active={modalitiesOutput.length > 0}
       sorted={sorted}
       onSort={toggleSort}
     >
       <CheckboxFilterList
-        values={modalities}
+        values={modalitiesOutput}
         options={options}
         onToggle={toggle}
       />
