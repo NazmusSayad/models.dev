@@ -12,5 +12,5 @@ export function formatNumberIntoHumanReadable(input: number): string {
   }
 
   const suffix = suffixes[Math.min(magnitude, suffixes.length - 1)]
-  return `${+scaled.toFixed(1)}${suffix}`
+  return `${+scaled.toFixed(2)}${suffix}`
 }
