@@ -46,7 +46,7 @@ export function NumberValueRenderer({
 
     return (
       <span className="text-foreground text-sm font-thin tabular-nums">
-        ${+value.toFixed(3)}
+        ${+value.toFixed(4)}
       </span>
     )
   }
