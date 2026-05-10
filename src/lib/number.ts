@@ -12,11 +12,5 @@ export function formatNumberIntoHumanReadable(input: number): string {
   }
 
   const suffix = suffixes[Math.min(magnitude, suffixes.length - 1)]
-
-  let formatted = scaled.toFixed(1)
-  if (formatted.endsWith('.0')) {
-    formatted = formatted.slice(0, -2)
-  }
-
-  return formatted + suffix
+  return `${+scaled.toFixed(1)}${suffix}`
 }

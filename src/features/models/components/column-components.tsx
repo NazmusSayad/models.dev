@@ -47,10 +47,10 @@ export function NumberValueRenderer({
     return (
       <span className="text-foreground text-sm font-thin tabular-nums">
         {value < 0.01
-          ? `$${value.toFixed(4)}`
+          ? `$${+value.toFixed(4)}`
           : value < 1
-            ? `$${value.toFixed(2)}`
-            : `$${value.toFixed(2)}`}
+            ? `$${+value.toFixed(2)}`
+            : `$${+value.toFixed(2)}`}
       </span>
     )
   }
