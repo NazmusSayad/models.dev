@@ -108,10 +108,10 @@ export interface ApiData {
 }
 
 export interface FlatModel {
-  providerId: string
-  providerName: string
   id: string
   name: string
+  providerId: string
+  providerName: string
   family: string
   attachment: boolean
   reasoning: boolean

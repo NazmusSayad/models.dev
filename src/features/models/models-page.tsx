@@ -6,6 +6,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useHotkey } from '@tanstack/react-hotkeys'
 import Link from 'next/link'
 import { useRef } from 'react'
+import { SiGithub } from 'react-icons/si'
 import { ColumnToggle } from './components/column-toggle'
 import { ModelsTable } from './components/models-table'
 import { FlatModel } from './helpers/data'
@@ -25,7 +26,7 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
   })
 
   return (
-    <div className="flex h-screen w-full flex-col gap-3 p-4">
+    <div className="flex h-screen w-full flex-col gap-3 p-4 pt-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center justify-between gap-3 sm:justify-start">
           <Link href="/">
@@ -36,13 +37,33 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
             </h1>
           </Link>
 
-          <span className="text-muted-foreground bg-muted rounded-full px-2.5 py-0.5 text-xs whitespace-nowrap">
-            {filteredModels.length.toLocaleString()} /{' '}
-            {models.length.toLocaleString()}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground bg-muted rounded-full px-2.5 py-0.5 text-xs whitespace-nowrap">
+              {filteredModels.length.toLocaleString()} /{' '}
+              {models.length.toLocaleString()}
+            </span>
+
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://github.com/NazmusSayad/models.dev"
+              className="text-muted-foreground hover:text-foreground flex size-7 shrink-0 items-center justify-center rounded-md transition-colors sm:hidden"
+            >
+              <SiGithub className="size-5" />
+            </a>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://github.com/NazmusSayad/models.dev"
+            className="text-muted-foreground hover:text-foreground hidden size-7 shrink-0 items-center justify-center rounded-md transition-colors sm:flex"
+          >
+            <SiGithub className="size-5" />
+          </a>
+
           <div className="relative w-full sm:max-w-sm">
             <HugeiconsIcon
               icon={Search01Icon}

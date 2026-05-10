@@ -190,7 +190,7 @@ export function useModelData(models: FlatModel[]) {
 
   const fuse = useMemo(() => {
     return new Fuse(models, {
-      keys: ['name', 'id', 'family', 'providerName'],
+      keys: ['id', 'name', 'family', 'providerId', 'providerName'],
       threshold: 0.3,
       ignoreLocation: true,
     })
