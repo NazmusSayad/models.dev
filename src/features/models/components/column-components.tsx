@@ -419,7 +419,7 @@ export function ModelHeader() {
   return (
     <div
       onClick={toggleSort}
-      className="hover:text-foreground flex cursor-pointer items-center truncate text-xs font-semibold tracking-wider whitespace-nowrap uppercase select-none"
+      className="hover:text-foreground flex cursor-pointer items-center truncate text-xs font-medium tracking-wider whitespace-nowrap uppercase select-none"
     >
       Model
       <SortArrow sorted={sorted} />
