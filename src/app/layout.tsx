@@ -14,6 +14,8 @@ const rubik = Rubik({
   variable: '--font-sans',
 })
 
+export const dynamic = 'force-static'
+
 export const metadata: Metadata = {
   title: 'AI Models Explorer UI using models.dev',
   description:
