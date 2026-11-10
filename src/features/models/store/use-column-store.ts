@@ -12,7 +12,10 @@ const defaultVisibility: Record<string, boolean> = {
   providerName: true,
   name: true,
   family: false,
+  type: false,
   status: false,
+  description: false,
+  canonicalModelId: false,
   costInput: true,
   costOutput: true,
   costCacheRead: true,
@@ -21,19 +24,31 @@ const defaultVisibility: Record<string, boolean> = {
   costOver200kOutput: false,
   costOver200kCacheRead: false,
   costOver200kCacheWrite: false,
+  costReasoning: false,
+  costInputAudio: false,
+  costOutputAudio: false,
+  isFree: false,
+  tierCount: false,
   contextLimit: true,
   inputLimit: true,
   outputLimit: true,
-  release_date: true,
-  knowledge: false,
-  last_updated: false,
   modalitiesInput: true,
   modalitiesOutput: true,
-  open_weights: false,
+  temperature: false,
   reasoning: false,
+  reasoningOptions: false,
   tool_call: false,
   attachment: false,
   structuredOutput: false,
+  open_weights: false,
+  interleaved: false,
+  knowledge: false,
+  release_date: true,
+  last_updated: false,
+  providerApi: false,
+  providerDoc: false,
+  providerEnv: false,
+  providerNpm: false,
 }
 
 export const useColumnStore = create<ColumnStore>()(
@@ -52,6 +67,21 @@ export const useColumnStore = create<ColumnStore>()(
     }),
     {
       name: 'models-column-visibility',
+      version: 2,
+      migrate: (persistedState, version) => {
+        const persisted = persistedState as
+          | { visibility?: Record<string, boolean> }
+          | undefined
+
+        return {
+          ...persisted,
+          visibility: {
+            ...defaultVisibility,
+            ...persisted?.visibility,
+            ...(version < 2 ? { status: false } : {}),
+          },
+        } as ColumnStore
+      },
     }
   )
 )

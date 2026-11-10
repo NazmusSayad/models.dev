@@ -8,13 +8,14 @@ import Link from 'next/link'
 import { useRef } from 'react'
 import { SiGithub } from 'react-icons/si'
 import { ColumnToggle } from './components/column-toggle'
+import { FiltersPopover } from './components/filters-popover'
 import { ModelsTable } from './components/models-table'
 import { FlatModel } from './helpers/data'
 import { useModelData } from './helpers/use-model-data'
 import { useColumnStore } from './store/use-column-store'
 
 export function ModelsPageCore({ models }: { models: FlatModel[] }) {
-  const { search, setSearch, filteredModels, resetFilters } =
+  const { search, setSearch, filteredModels, activeCount, resetFilters } =
     useModelData(models)
 
   const columnVisibility = useColumnStore((s) => s.visibility)
@@ -89,13 +90,18 @@ export function ModelsPageCore({ models }: { models: FlatModel[] }) {
             )}
           </div>
 
+          <FiltersPopover
+            models={models}
+            activeCount={activeCount}
+            onReset={resetFilters}
+          />
+
           <ColumnToggle />
         </div>
       </div>
 
       <ModelsTable
         data={filteredModels}
-        models={models}
         columnVisibility={columnVisibility}
         onResetFilters={resetFilters}
       />

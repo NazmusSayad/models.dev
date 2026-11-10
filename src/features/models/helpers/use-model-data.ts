@@ -12,6 +12,35 @@ import {
 import { useCallback, useDeferredValue, useMemo } from 'react'
 import { FlatModel } from './data'
 
+function inNumberRange(
+  value: number | null | undefined,
+  min: number | null,
+  max: number | null
+) {
+  if (min !== null && (value == null || value < min)) return false
+  if (max !== null && (value == null || value > max)) return false
+  return true
+}
+
+function matchesText(value: string | undefined, query: string | null) {
+  if (query === null || !query.trim()) return true
+  return value?.toLowerCase().includes(query.toLowerCase()) ?? false
+}
+
+function matchesDate(
+  value: string | undefined,
+  from: string | null,
+  to: string | null
+) {
+  if (from !== null && (!value || value < from)) return false
+  if (to !== null && (!value || value > to)) return false
+  return true
+}
+
+function matchesSelection(value: string, selection: string[]) {
+  return selection.length === 0 || selection.includes(value)
+}
+
 export function useModelData(models: FlatModel[]) {
   const [search, setSearch] = useQueryState('q', parseAsString.withDefault(''))
   const deferredSearch = useDeferredValue(search)
@@ -24,6 +53,18 @@ export function useModelData(models: FlatModel[]) {
     'families',
     parseAsArrayOf(parseAsString).withDefault([])
   )
+  const [types, setTypes] = useQueryState(
+    'type',
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [status, setStatus] = useQueryState(
+    'status',
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [reasoningOptions, setReasoningOptions] = useQueryState(
+    'reasoningOptions',
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
   const [modalitiesInput, setModalitiesInput] = useQueryState(
     'modalitiesInput',
     parseAsArrayOf(parseAsString).withDefault([])
@@ -32,26 +73,29 @@ export function useModelData(models: FlatModel[]) {
     'modalitiesOutput',
     parseAsArrayOf(parseAsString).withDefault([])
   )
-  const [status, setStatus] = useQueryState(
-    'status',
-    parseAsArrayOf(parseAsString).withDefault([])
-  )
 
-  const [openWeightsRaw, setOpenWeights] = useQueryState(
+  const [openWeights, setOpenWeights] = useQueryState(
     'openWeights',
     parseAsBoolean
   )
-  const [reasoningRaw, setReasoning] = useQueryState(
-    'reasoning',
-    parseAsBoolean
-  )
-  const [toolCallRaw, setToolCall] = useQueryState('toolCall', parseAsBoolean)
-  const [attachmentRaw, setAttachment] = useQueryState(
+  const [reasoning, setReasoning] = useQueryState('reasoning', parseAsBoolean)
+  const [toolCall, setToolCall] = useQueryState('toolCall', parseAsBoolean)
+  const [attachment, setAttachment] = useQueryState(
     'attachment',
     parseAsBoolean
   )
-  const [structuredOutputRaw, setStructuredOutput] = useQueryState(
+  const [structuredOutput, setStructuredOutput] = useQueryState(
     'structuredOutput',
+    parseAsBoolean
+  )
+  const [temperature, setTemperature] = useQueryState(
+    'temperature',
+    parseAsBoolean
+  )
+  const [free, setFree] = useQueryState('free', parseAsBoolean)
+  const [tiered, setTiered] = useQueryState('tiered', parseAsBoolean)
+  const [interleaved, setInterleaved] = useQueryState(
+    'interleaved',
     parseAsBoolean
   )
 
@@ -59,6 +103,15 @@ export function useModelData(models: FlatModel[]) {
     'knowledgeQuery',
     parseAsString
   )
+  const [descriptionQuery, setDescriptionQuery] = useQueryState(
+    'descriptionQuery',
+    parseAsString
+  )
+  const [canonicalQuery, setCanonicalQuery] = useQueryState(
+    'canonicalQuery',
+    parseAsString
+  )
+
   const [releaseDateFrom, setReleaseDateFrom] = useQueryState(
     'releaseDateFrom',
     parseAsString
@@ -76,83 +129,111 @@ export function useModelData(models: FlatModel[]) {
     parseAsString
   )
 
-  const [costInputMinRaw, setCostInputMin] = useQueryState(
+  const [costInputMin, setCostInputMin] = useQueryState(
     'costInputMin',
     parseAsFloat
   )
-  const [costInputMaxRaw, setCostInputMax] = useQueryState(
+  const [costInputMax, setCostInputMax] = useQueryState(
     'costInputMax',
     parseAsFloat
   )
-  const [costOutputMinRaw, setCostOutputMin] = useQueryState(
+  const [costOutputMin, setCostOutputMin] = useQueryState(
     'costOutputMin',
     parseAsFloat
   )
-  const [costOutputMaxRaw, setCostOutputMax] = useQueryState(
+  const [costOutputMax, setCostOutputMax] = useQueryState(
     'costOutputMax',
     parseAsFloat
   )
-  const [costCacheReadMinRaw, setCostCacheReadMin] = useQueryState(
+  const [costCacheReadMin, setCostCacheReadMin] = useQueryState(
     'costCacheReadMin',
     parseAsFloat
   )
-  const [costCacheReadMaxRaw, setCostCacheReadMax] = useQueryState(
+  const [costCacheReadMax, setCostCacheReadMax] = useQueryState(
     'costCacheReadMax',
     parseAsFloat
   )
-  const [costCacheWriteMinRaw, setCostCacheWriteMin] = useQueryState(
+  const [costCacheWriteMin, setCostCacheWriteMin] = useQueryState(
     'costCacheWriteMin',
     parseAsFloat
   )
-  const [costCacheWriteMaxRaw, setCostCacheWriteMax] = useQueryState(
+  const [costCacheWriteMax, setCostCacheWriteMax] = useQueryState(
     'costCacheWriteMax',
     parseAsFloat
   )
-  const [costOver200kInputMinRaw, setCostOver200kInputMin] = useQueryState(
+  const [costOver200kInputMin, setCostOver200kInputMin] = useQueryState(
     'costOver200kInputMin',
     parseAsFloat
   )
-  const [costOver200kInputMaxRaw, setCostOver200kInputMax] = useQueryState(
+  const [costOver200kInputMax, setCostOver200kInputMax] = useQueryState(
     'costOver200kInputMax',
     parseAsFloat
   )
-  const [costOver200kOutputMinRaw, setCostOver200kOutputMin] = useQueryState(
+  const [costOver200kOutputMin, setCostOver200kOutputMin] = useQueryState(
     'costOver200kOutputMin',
     parseAsFloat
   )
-  const [costOver200kOutputMaxRaw, setCostOver200kOutputMax] = useQueryState(
+  const [costOver200kOutputMax, setCostOver200kOutputMax] = useQueryState(
     'costOver200kOutputMax',
     parseAsFloat
   )
-  const [costOver200kCacheReadMinRaw, setCostOver200kCacheReadMin] =
-    useQueryState('costOver200kCacheReadMin', parseAsFloat)
-  const [costOver200kCacheReadMaxRaw, setCostOver200kCacheReadMax] =
-    useQueryState('costOver200kCacheReadMax', parseAsFloat)
-  const [costOver200kCacheWriteMinRaw, setCostOver200kCacheWriteMin] =
+  const [costOver200kCacheReadMin, setCostOver200kCacheReadMin] = useQueryState(
+    'costOver200kCacheReadMin',
+    parseAsFloat
+  )
+  const [costOver200kCacheReadMax, setCostOver200kCacheReadMax] = useQueryState(
+    'costOver200kCacheReadMax',
+    parseAsFloat
+  )
+  const [costOver200kCacheWriteMin, setCostOver200kCacheWriteMin] =
     useQueryState('costOver200kCacheWriteMin', parseAsFloat)
-  const [costOver200kCacheWriteMaxRaw, setCostOver200kCacheWriteMax] =
+  const [costOver200kCacheWriteMax, setCostOver200kCacheWriteMax] =
     useQueryState('costOver200kCacheWriteMax', parseAsFloat)
-  const [contextLimitMinRaw, setContextLimitMin] = useQueryState(
+  const [costReasoningMin, setCostReasoningMin] = useQueryState(
+    'costReasoningMin',
+    parseAsFloat
+  )
+  const [costReasoningMax, setCostReasoningMax] = useQueryState(
+    'costReasoningMax',
+    parseAsFloat
+  )
+  const [costInputAudioMin, setCostInputAudioMin] = useQueryState(
+    'costInputAudioMin',
+    parseAsFloat
+  )
+  const [costInputAudioMax, setCostInputAudioMax] = useQueryState(
+    'costInputAudioMax',
+    parseAsFloat
+  )
+  const [costOutputAudioMin, setCostOutputAudioMin] = useQueryState(
+    'costOutputAudioMin',
+    parseAsFloat
+  )
+  const [costOutputAudioMax, setCostOutputAudioMax] = useQueryState(
+    'costOutputAudioMax',
+    parseAsFloat
+  )
+  const [contextLimitMin, setContextLimitMin] = useQueryState(
     'contextLimitMin',
     parseAsInteger
   )
-  const [contextLimitMaxRaw, setContextLimitMax] = useQueryState(
+  const [contextLimitMax, setContextLimitMax] = useQueryState(
     'contextLimitMax',
     parseAsInteger
   )
-  const [inputLimitMinRaw, setInputLimitMin] = useQueryState(
+  const [inputLimitMin, setInputLimitMin] = useQueryState(
     'inputLimitMin',
     parseAsInteger
   )
-  const [inputLimitMaxRaw, setInputLimitMax] = useQueryState(
+  const [inputLimitMax, setInputLimitMax] = useQueryState(
     'inputLimitMax',
     parseAsInteger
   )
-  const [outputLimitMinRaw, setOutputLimitMin] = useQueryState(
+  const [outputLimitMin, setOutputLimitMin] = useQueryState(
     'outputLimitMin',
     parseAsInteger
   )
-  const [outputLimitMaxRaw, setOutputLimitMax] = useQueryState(
+  const [outputLimitMax, setOutputLimitMax] = useQueryState(
     'outputLimitMax',
     parseAsInteger
   )
@@ -160,37 +241,18 @@ export function useModelData(models: FlatModel[]) {
   const [sort] = useQueryState('sort', parseAsString)
   const [dir] = useQueryState('dir', parseAsString)
 
-  const openWeights = openWeightsRaw ?? null
-  const reasoning = reasoningRaw ?? null
-  const toolCall = toolCallRaw ?? null
-  const attachment = attachmentRaw ?? null
-  const structuredOutput = structuredOutputRaw ?? null
-  const costInputMin = costInputMinRaw ?? null
-  const costInputMax = costInputMaxRaw ?? null
-  const costOutputMin = costOutputMinRaw ?? null
-  const costOutputMax = costOutputMaxRaw ?? null
-  const costCacheReadMin = costCacheReadMinRaw ?? null
-  const costCacheReadMax = costCacheReadMaxRaw ?? null
-  const costCacheWriteMin = costCacheWriteMinRaw ?? null
-  const costCacheWriteMax = costCacheWriteMaxRaw ?? null
-  const costOver200kInputMin = costOver200kInputMinRaw ?? null
-  const costOver200kInputMax = costOver200kInputMaxRaw ?? null
-  const costOver200kOutputMin = costOver200kOutputMinRaw ?? null
-  const costOver200kOutputMax = costOver200kOutputMaxRaw ?? null
-  const costOver200kCacheReadMin = costOver200kCacheReadMinRaw ?? null
-  const costOver200kCacheReadMax = costOver200kCacheReadMaxRaw ?? null
-  const costOver200kCacheWriteMin = costOver200kCacheWriteMinRaw ?? null
-  const costOver200kCacheWriteMax = costOver200kCacheWriteMaxRaw ?? null
-  const contextLimitMin = contextLimitMinRaw ?? null
-  const contextLimitMax = contextLimitMaxRaw ?? null
-  const inputLimitMin = inputLimitMinRaw ?? null
-  const inputLimitMax = inputLimitMaxRaw ?? null
-  const outputLimitMin = outputLimitMinRaw ?? null
-  const outputLimitMax = outputLimitMaxRaw ?? null
-
   const fuse = useMemo(() => {
     return new Fuse(models, {
-      keys: ['id', 'name', 'family', 'providerId', 'providerName'],
+      keys: [
+        'id',
+        'name',
+        'family',
+        'providerId',
+        'providerName',
+        'description',
+        'canonicalModelId',
+        'type',
+      ],
       threshold: 0.3,
       ignoreLocation: true,
     })
@@ -201,223 +263,174 @@ export function useModelData(models: FlatModel[]) {
 
     if (deferredSearch.trim()) {
       const hits = fuse.search(deferredSearch.trim())
-      result = hits.map((h) => h.item)
+      result = hits.map((hit) => hit.item)
     }
 
-    if (providers.length > 0) {
-      result = result.filter((m) => providers.includes(m.providerId))
-    }
-    if (families.length > 0) {
-      result = result.filter((m) => families.includes(m.family))
-    }
-    if (status.length > 0) {
-      result = result.filter((m) => status.includes(m.status))
-    }
-    if (openWeights !== null) {
-      result = result.filter((m) => m.open_weights === openWeights)
-    }
-    if (reasoning !== null) {
-      result = result.filter((m) => m.reasoning === reasoning)
-    }
-    if (toolCall !== null) {
-      result = result.filter((m) => m.tool_call === toolCall)
-    }
-    if (attachment !== null) {
-      result = result.filter((m) => m.attachment === attachment)
-    }
-    if (structuredOutput !== null) {
-      result = result.filter((m) => m.structuredOutput === structuredOutput)
-    }
-    if (modalitiesInput.length > 0) {
-      result = result.filter((m) =>
-        modalitiesInput.some((mod) => m.modalitiesInput.includes(mod))
+    result = result.filter((model) => {
+      if (!matchesSelection(model.providerId, providers)) return false
+      if (!matchesSelection(model.family, families)) return false
+      if (!matchesSelection(model.type, types)) return false
+      if (status.length === 0) {
+        if (model.status === 'deprecated') return false
+      } else if (!status.includes(model.status)) {
+        return false
+      }
+      if (
+        reasoningOptions.length > 0 &&
+        !model.reasoningOptions.some((option) =>
+          reasoningOptions.includes(option)
+        )
+      ) {
+        return false
+      }
+      if (
+        modalitiesInput.length > 0 &&
+        !model.modalitiesInput.some((modality) =>
+          modalitiesInput.includes(modality)
+        )
+      ) {
+        return false
+      }
+      if (
+        modalitiesOutput.length > 0 &&
+        !model.modalitiesOutput.some((modality) =>
+          modalitiesOutput.includes(modality)
+        )
+      ) {
+        return false
+      }
+      if (openWeights !== null && model.open_weights !== openWeights)
+        return false
+      if (reasoning !== null && model.reasoning !== reasoning) return false
+      if (toolCall !== null && model.tool_call !== toolCall) return false
+      if (attachment !== null && model.attachment !== attachment) return false
+      if (
+        structuredOutput !== null &&
+        model.structuredOutput !== structuredOutput
+      ) {
+        return false
+      }
+      if (temperature !== null && model.temperature !== temperature)
+        return false
+      if (free !== null && model.isFree !== free) return false
+      if (tiered !== null && model.tierCount > 0 !== tiered) return false
+      if (interleaved !== null && Boolean(model.interleaved) !== interleaved) {
+        return false
+      }
+      if (!matchesText(model.knowledge, knowledgeQuery)) return false
+      if (!matchesText(model.description, descriptionQuery)) return false
+      if (!matchesText(model.canonicalModelId, canonicalQuery)) return false
+      if (!matchesDate(model.release_date, releaseDateFrom, releaseDateTo))
+        return false
+      if (!matchesDate(model.last_updated, lastUpdatedFrom, lastUpdatedTo))
+        return false
+      if (!inNumberRange(model.costInput, costInputMin, costInputMax))
+        return false
+      if (!inNumberRange(model.costOutput, costOutputMin, costOutputMax))
+        return false
+      if (
+        !inNumberRange(model.costCacheRead, costCacheReadMin, costCacheReadMax)
       )
-    }
-    if (modalitiesOutput.length > 0) {
-      result = result.filter((m) =>
-        modalitiesOutput.some((mod) => m.modalitiesOutput.includes(mod))
+        return false
+      if (
+        !inNumberRange(
+          model.costCacheWrite,
+          costCacheWriteMin,
+          costCacheWriteMax
+        )
       )
-    }
-    if (knowledgeQuery !== null && knowledgeQuery.trim()) {
-      const q = knowledgeQuery.toLowerCase()
-      result = result.filter((m) => m.knowledge?.toLowerCase().includes(q))
-    }
-    if (releaseDateFrom !== null) {
-      result = result.filter((m) =>
-        m.release_date ? m.release_date >= releaseDateFrom : false
+        return false
+      if (
+        !inNumberRange(
+          model.costOver200kInput,
+          costOver200kInputMin,
+          costOver200kInputMax
+        )
       )
-    }
-    if (releaseDateTo !== null) {
-      result = result.filter((m) =>
-        m.release_date ? m.release_date <= releaseDateTo : false
+        return false
+      if (
+        !inNumberRange(
+          model.costOver200kOutput,
+          costOver200kOutputMin,
+          costOver200kOutputMax
+        )
       )
-    }
-    if (lastUpdatedFrom !== null) {
-      result = result.filter((m) =>
-        m.last_updated ? m.last_updated >= lastUpdatedFrom : false
+        return false
+      if (
+        !inNumberRange(
+          model.costOver200kCacheRead,
+          costOver200kCacheReadMin,
+          costOver200kCacheReadMax
+        )
       )
-    }
-    if (lastUpdatedTo !== null) {
-      result = result.filter((m) =>
-        m.last_updated ? m.last_updated <= lastUpdatedTo : false
+        return false
+      if (
+        !inNumberRange(
+          model.costOver200kCacheWrite,
+          costOver200kCacheWriteMin,
+          costOver200kCacheWriteMax
+        )
       )
-    }
-    if (costInputMin !== null) {
-      result = result.filter(
-        (m) => m.costInput != null && m.costInput >= costInputMin
+        return false
+      if (
+        !inNumberRange(model.costReasoning, costReasoningMin, costReasoningMax)
       )
-    }
-    if (costInputMax !== null) {
-      result = result.filter(
-        (m) => m.costInput != null && m.costInput <= costInputMax
+        return false
+      if (
+        !inNumberRange(
+          model.costInputAudio,
+          costInputAudioMin,
+          costInputAudioMax
+        )
       )
-    }
-    if (costOutputMin !== null) {
-      result = result.filter(
-        (m) => m.costOutput != null && m.costOutput >= costOutputMin
+        return false
+      if (
+        !inNumberRange(
+          model.costOutputAudio,
+          costOutputAudioMin,
+          costOutputAudioMax
+        )
       )
-    }
-    if (costOutputMax !== null) {
-      result = result.filter(
-        (m) => m.costOutput != null && m.costOutput <= costOutputMax
-      )
-    }
-    if (costCacheReadMin !== null) {
-      result = result.filter(
-        (m) => m.costCacheRead != null && m.costCacheRead >= costCacheReadMin
-      )
-    }
-    if (costCacheReadMax !== null) {
-      result = result.filter(
-        (m) => m.costCacheRead != null && m.costCacheRead <= costCacheReadMax
-      )
-    }
-    if (costCacheWriteMin !== null) {
-      result = result.filter(
-        (m) => m.costCacheWrite != null && m.costCacheWrite >= costCacheWriteMin
-      )
-    }
-    if (costCacheWriteMax !== null) {
-      result = result.filter(
-        (m) => m.costCacheWrite != null && m.costCacheWrite <= costCacheWriteMax
-      )
-    }
-    if (costOver200kInputMin !== null) {
-      result = result.filter((m) =>
-        m.costOver200kInput
-          ? m.costOver200kInput >= costOver200kInputMin
-          : false
-      )
-    }
-    if (costOver200kInputMax !== null) {
-      result = result.filter((m) =>
-        m.costOver200kInput
-          ? m.costOver200kInput <= costOver200kInputMax
-          : false
-      )
-    }
-    if (costOver200kOutputMin !== null) {
-      result = result.filter((m) =>
-        m.costOver200kOutput
-          ? m.costOver200kOutput >= costOver200kOutputMin
-          : false
-      )
-    }
-    if (costOver200kOutputMax !== null) {
-      result = result.filter((m) =>
-        m.costOver200kOutput
-          ? m.costOver200kOutput <= costOver200kOutputMax
-          : false
-      )
-    }
-    if (costOver200kCacheReadMin !== null) {
-      result = result.filter((m) =>
-        m.costOver200kCacheRead
-          ? m.costOver200kCacheRead >= costOver200kCacheReadMin
-          : false
-      )
-    }
-    if (costOver200kCacheReadMax !== null) {
-      result = result.filter((m) =>
-        m.costOver200kCacheRead
-          ? m.costOver200kCacheRead <= costOver200kCacheReadMax
-          : false
-      )
-    }
-    if (costOver200kCacheWriteMin !== null) {
-      result = result.filter((m) =>
-        m.costOver200kCacheWrite
-          ? m.costOver200kCacheWrite >= costOver200kCacheWriteMin
-          : false
-      )
-    }
-    if (costOver200kCacheWriteMax !== null) {
-      result = result.filter((m) =>
-        m.costOver200kCacheWrite
-          ? m.costOver200kCacheWrite <= costOver200kCacheWriteMax
-          : false
-      )
-    }
-    if (contextLimitMin !== null) {
-      result = result.filter((m) =>
-        m.contextLimit != null ? m.contextLimit >= contextLimitMin : false
-      )
-    }
-    if (contextLimitMax !== null) {
-      result = result.filter((m) =>
-        m.contextLimit != null ? m.contextLimit <= contextLimitMax : false
-      )
-    }
-    if (inputLimitMin !== null) {
-      result = result.filter((m) =>
-        m.inputLimit != null ? m.inputLimit >= inputLimitMin : false
-      )
-    }
-    if (inputLimitMax !== null) {
-      result = result.filter((m) =>
-        m.inputLimit != null ? m.inputLimit <= inputLimitMax : false
-      )
-    }
-    if (outputLimitMin !== null) {
-      result = result.filter((m) =>
-        m.outputLimit != null ? m.outputLimit >= outputLimitMin : false
-      )
-    }
-    if (outputLimitMax !== null) {
-      result = result.filter((m) =>
-        m.outputLimit != null ? m.outputLimit <= outputLimitMax : false
-      )
-    }
+        return false
+      if (!inNumberRange(model.contextLimit, contextLimitMin, contextLimitMax))
+        return false
+      if (!inNumberRange(model.inputLimit, inputLimitMin, inputLimitMax))
+        return false
+      if (!inNumberRange(model.outputLimit, outputLimitMin, outputLimitMax))
+        return false
+
+      return true
+    })
 
     if (sort && (dir === 'asc' || dir === 'desc')) {
       result = [...result].sort((a, b) => {
-        const aVal = a[sort as keyof FlatModel]
-        const bVal = b[sort as keyof FlatModel]
+        const aValue = a[sort as keyof FlatModel]
+        const bValue = b[sort as keyof FlatModel]
 
-        if (typeof aVal === 'number' || typeof bVal === 'number') {
-          if (typeof aVal === 'number' && typeof bVal === 'number') {
-            return dir === 'asc' ? aVal - bVal : bVal - aVal
+        if (typeof aValue === 'number' || typeof bValue === 'number') {
+          if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return dir === 'asc' ? aValue - bValue : bValue - aValue
           }
-          return typeof aVal === 'number' ? -1 : 1
+          return typeof aValue === 'number' ? -1 : 1
         }
-        if (typeof aVal === 'string' || typeof bVal === 'string') {
-          if (typeof aVal === 'string' && typeof bVal === 'string') {
+        if (typeof aValue === 'string' || typeof bValue === 'string') {
+          if (typeof aValue === 'string' && typeof bValue === 'string') {
             return dir === 'asc'
-              ? aVal.localeCompare(bVal)
-              : bVal.localeCompare(aVal)
+              ? aValue.localeCompare(bValue)
+              : bValue.localeCompare(aValue)
           }
-          return typeof aVal === 'string' ? -1 : 1
+          return typeof aValue === 'string' ? -1 : 1
         }
-        if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
-          if (aVal === bVal) return 0
-          return dir === 'asc' ? (aVal ? 1 : -1) : aVal ? -1 : 1
+        if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+          if (aValue === bValue) return 0
+          return dir === 'asc' ? (aValue ? 1 : -1) : aValue ? -1 : 1
         }
-        if (Array.isArray(aVal) && Array.isArray(bVal)) {
-          const aStr = aVal.join(',')
-          const bStr = bVal.join(',')
+        if (Array.isArray(aValue) && Array.isArray(bValue)) {
+          const aString = aValue.join(',')
+          const bString = bValue.join(',')
           return dir === 'asc'
-            ? aStr.localeCompare(bStr)
-            : bStr.localeCompare(aStr)
+            ? aString.localeCompare(bString)
+            : bString.localeCompare(aString)
         }
         return 0
       })
@@ -430,7 +443,9 @@ export function useModelData(models: FlatModel[]) {
     fuse,
     providers,
     families,
+    types,
     status,
+    reasoningOptions,
     modalitiesInput,
     modalitiesOutput,
     openWeights,
@@ -438,7 +453,13 @@ export function useModelData(models: FlatModel[]) {
     toolCall,
     attachment,
     structuredOutput,
+    temperature,
+    free,
+    tiered,
+    interleaved,
     knowledgeQuery,
+    descriptionQuery,
+    canonicalQuery,
     releaseDateFrom,
     releaseDateTo,
     lastUpdatedFrom,
@@ -459,6 +480,12 @@ export function useModelData(models: FlatModel[]) {
     costOver200kCacheReadMax,
     costOver200kCacheWriteMin,
     costOver200kCacheWriteMax,
+    costReasoningMin,
+    costReasoningMax,
+    costInputAudioMin,
+    costInputAudioMax,
+    costOutputAudioMin,
+    costOutputAudioMax,
     contextLimitMin,
     contextLimitMax,
     inputLimitMin,
@@ -472,15 +499,23 @@ export function useModelData(models: FlatModel[]) {
   const activeCount =
     providers.length +
     families.length +
+    types.length +
     status.length +
+    reasoningOptions.length +
+    modalitiesInput.length +
+    modalitiesOutput.length +
     (openWeights !== null ? 1 : 0) +
     (reasoning !== null ? 1 : 0) +
     (toolCall !== null ? 1 : 0) +
     (attachment !== null ? 1 : 0) +
     (structuredOutput !== null ? 1 : 0) +
-    modalitiesInput.length +
-    modalitiesOutput.length +
+    (temperature !== null ? 1 : 0) +
+    (free !== null ? 1 : 0) +
+    (tiered !== null ? 1 : 0) +
+    (interleaved !== null ? 1 : 0) +
     (knowledgeQuery !== null ? 1 : 0) +
+    (descriptionQuery !== null ? 1 : 0) +
+    (canonicalQuery !== null ? 1 : 0) +
     (releaseDateFrom !== null || releaseDateTo !== null ? 1 : 0) +
     (lastUpdatedFrom !== null || lastUpdatedTo !== null ? 1 : 0) +
     (costInputMin !== null || costInputMax !== null ? 1 : 0) +
@@ -495,6 +530,9 @@ export function useModelData(models: FlatModel[]) {
     (costOver200kCacheWriteMin !== null || costOver200kCacheWriteMax !== null
       ? 1
       : 0) +
+    (costReasoningMin !== null || costReasoningMax !== null ? 1 : 0) +
+    (costInputAudioMin !== null || costInputAudioMax !== null ? 1 : 0) +
+    (costOutputAudioMin !== null || costOutputAudioMax !== null ? 1 : 0) +
     (contextLimitMin !== null || contextLimitMax !== null ? 1 : 0) +
     (inputLimitMin !== null || inputLimitMax !== null ? 1 : 0) +
     (outputLimitMin !== null || outputLimitMax !== null ? 1 : 0)
@@ -503,15 +541,23 @@ export function useModelData(models: FlatModel[]) {
     void setSearch(null)
     void setProviders(null)
     void setFamilies(null)
+    void setTypes(null)
+    void setStatus(null)
+    void setReasoningOptions(null)
     void setModalitiesInput(null)
     void setModalitiesOutput(null)
-    void setStatus(null)
     void setOpenWeights(null)
     void setReasoning(null)
     void setToolCall(null)
     void setAttachment(null)
     void setStructuredOutput(null)
+    void setTemperature(null)
+    void setFree(null)
+    void setTiered(null)
+    void setInterleaved(null)
     void setKnowledgeQuery(null)
+    void setDescriptionQuery(null)
+    void setCanonicalQuery(null)
     void setReleaseDateFrom(null)
     void setReleaseDateTo(null)
     void setLastUpdatedFrom(null)
@@ -532,6 +578,12 @@ export function useModelData(models: FlatModel[]) {
     void setCostOver200kCacheReadMax(null)
     void setCostOver200kCacheWriteMin(null)
     void setCostOver200kCacheWriteMax(null)
+    void setCostReasoningMin(null)
+    void setCostReasoningMax(null)
+    void setCostInputAudioMin(null)
+    void setCostInputAudioMax(null)
+    void setCostOutputAudioMin(null)
+    void setCostOutputAudioMax(null)
     void setContextLimitMin(null)
     void setContextLimitMax(null)
     void setInputLimitMin(null)
@@ -542,15 +594,23 @@ export function useModelData(models: FlatModel[]) {
     setSearch,
     setProviders,
     setFamilies,
+    setTypes,
+    setStatus,
+    setReasoningOptions,
     setModalitiesInput,
     setModalitiesOutput,
-    setStatus,
     setOpenWeights,
     setReasoning,
     setToolCall,
     setAttachment,
     setStructuredOutput,
+    setTemperature,
+    setFree,
+    setTiered,
+    setInterleaved,
     setKnowledgeQuery,
+    setDescriptionQuery,
+    setCanonicalQuery,
     setReleaseDateFrom,
     setReleaseDateTo,
     setLastUpdatedFrom,
@@ -571,6 +631,12 @@ export function useModelData(models: FlatModel[]) {
     setCostOver200kCacheReadMax,
     setCostOver200kCacheWriteMin,
     setCostOver200kCacheWriteMax,
+    setCostReasoningMin,
+    setCostReasoningMax,
+    setCostInputAudioMin,
+    setCostInputAudioMax,
+    setCostOutputAudioMin,
+    setCostOutputAudioMax,
     setContextLimitMin,
     setContextLimitMax,
     setInputLimitMin,
